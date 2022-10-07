@@ -1,0 +1,66 @@
+{
+  "name": "@mojojs/user-agent",
+  "version": "0.0.1",
+  "description": "A powerful user-agent for Node.js and browsers",
+  "keywords": [
+    "mojojs",
+    "http"
+  ],
+  "author": "Sebastian Riedel <kraih@mojolicious.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojolicious/user-agent.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mojolicious/user-agent.js/issues"
+  },
+  "homepage": "https://mojojs.org",
+  "scripts": {
+    "build": "npx tsc --build ./",
+    "build:clean": "npm run clean && npm run build",
+    "build:coverage": "npm run build && npm run coverage",
+    "build:lint": "npm run build && npm run lint",
+    "build:test": "npm run build && npm test",
+    "build:watch": "npm run build -- --watch",
+    "clean": "rm -rf tsconfig.tsbuildinfo lib",
+    "coverage": "c8 tap --no-coverage test/*.js",
+    "coverage:ci": "c8 --reporter lcovonly tap --no-coverage test/*.js",
+    "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "lint:fix": "npm run lint -- --fix",
+    "prepublishOnly": "npm run build",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:patch": "npm version patch && npm publish",
+    "test": "tap --no-coverage test/*.js"
+  },
+  "exports": "./lib/node.js",
+  "types": "./lib/node.d.ts",
+  "type": "module",
+  "files": [
+    "lib/"
+  ],
+  "devDependencies": {
+    "@mojojs/core": "^1.6.0",
+    "@types/node": "^18.0.0",
+    "@types/tap": "^15.0.3",
+    "@types/tough-cookie": "^4.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "c8": "^7.11.3",
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.3.2",
+    "tap": "^16.0.1",
+    "typescript": "^=4.3.2"
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "dependencies": {
+    "@mojojs/dom": "^1.5.0",
+    "tough-cookie": "^4.1.2",
+    "undici": "^5.10.0"
+  }
+}

@@ -33,8 +33,19 @@
     "publish:patch": "npm version patch && npm publish",
     "test": "tap --no-coverage test/*.js"
   },
-  "exports": "./lib/node.js",
-  "types": "./lib/node.d.ts",
+  "exports": {
+    ".": {
+      "browser": {
+        "require": "./lib/browser.js",
+        "default": "./lib/browser.js"
+      },
+      "default": {
+        "require": "./lib/node.js",
+        "default": "./lib/node.js"
+      }
+    }
+  },
+  "types": "./lib/browser.d.ts",
   "type": "module",
   "files": [
     "lib/"

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test Suite</title>
+<script type="module">
+  import UserAgent from './browser.js';
+
+  async function tests() {
+    const ua = new UserAgent();
+    const res = await ua.get(document.location + '/../../hello');
+    document.write('<div id="hello">' + await res.text() + '</div>');
+  }
+
+  tests();
+</script>

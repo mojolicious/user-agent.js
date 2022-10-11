@@ -11,7 +11,7 @@ export default class BrowserUserAgent {
   maxRedirects: number;
   name: string | undefined;
 
-  constructor(options: UserAgentOptions) {
+  constructor(options: UserAgentOptions = {}) {
     this.baseURL = options.baseURL;
     this.maxRedirects = options.maxRedirects ?? 0;
     this.name = options.name;

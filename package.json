@@ -17,13 +17,13 @@
   },
   "homepage": "https://mojojs.org",
   "scripts": {
-    "build": "npx tsc --build ./",
+    "build": "npx tsc --build ./ && npx rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run build",
     "build:coverage": "npm run build && npm run coverage",
     "build:lint": "npm run build && npm run lint",
     "build:test": "npm run build && npm test",
     "build:watch": "npm run build -- --watch",
-    "clean": "rm -rf tsconfig.tsbuildinfo lib",
+    "clean": "rm -rf tsconfig.tsbuildinfo lib dist",
     "coverage": "c8 tap --no-coverage test/*.js",
     "coverage:ci": "c8 --reporter lcovonly tap --no-coverage test/*.js",
     "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
@@ -39,13 +39,15 @@
       "default": "./lib/node.js"
     }
   },
-  "types": "./lib/browser.d.ts",
+  "types": "./lib/node.d.ts",
   "type": "module",
   "files": [
     "lib/"
   ],
   "devDependencies": {
     "@mojojs/core": "^1.6.0",
+    "@mojojs/path": "^1.5.3",
+    "@rollup/plugin-node-resolve": "^15.0.0",
     "@types/node": "^18.0.0",
     "@types/tap": "^15.0.3",
     "@types/tough-cookie": "^4.0.2",
@@ -56,9 +58,11 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "playwright": "^1.26.1",
     "prettier": "^2.3.2",
+    "rollup": "^3.1.0",
     "tap": "^16.0.1",
-    "typescript": "^=4.3.2"
+    "typescript": "^4.3.2"
   },
   "engines": {
     "node": ">= 16"

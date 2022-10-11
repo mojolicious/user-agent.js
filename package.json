@@ -35,14 +35,8 @@
   },
   "exports": {
     ".": {
-      "browser": {
-        "require": "./lib/browser.js",
-        "default": "./lib/browser.js"
-      },
-      "default": {
-        "require": "./lib/node.js",
-        "default": "./lib/node.js"
-      }
+      "browser": "./lib/browser.js",
+      "default": "./lib/node.js"
     }
   },
   "types": "./lib/browser.d.ts",

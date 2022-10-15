@@ -83,6 +83,17 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Body
+    {
+      const res = await ua.put('/body', {body: 'Body works!'});
+      console.assert(res.statusCode === 200, 'body: status');
+      console.assert(await res.text() === 'Body works!', 'body: body');
+
+      const res2 = await ua.put('/body', {body: 'I ♥ Mojolicious!'});
+      console.assert(res2.statusCode === 200, 'body2: status');
+      console.assert(await res2.text() === 'I ♥ Mojolicious!', 'body2: body');
+    }
+
     // Query
     {
       const res = await ua.get('/headers', {query: {header: 'user-agent'}});

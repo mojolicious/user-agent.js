@@ -83,6 +83,42 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Methods
+    {
+      const res = await ua.delete('/methods');
+      console.assert(res.statusCode === 200, 'methods: status');
+      console.assert(await res.text() === 'DELETE', 'methods: body');
+
+      const res2 = await ua.get('/methods');
+      console.assert(res2.statusCode === 200, 'methods2: status');
+      console.assert(await res2.text() === 'GET', 'methods2: body');
+
+      const res3 = await ua.options('/methods');
+      console.assert(res3.statusCode === 200, 'methods3: status');
+      console.assert(await res3.text() === 'OPTIONS', 'methods3: body');
+
+      const res4 = await ua.patch('/methods');
+      console.assert(res4.statusCode === 200, 'methods4: status');
+      console.assert(await res4.text() === 'PATCH', 'methods4: body');
+
+      const res5 = await ua.post('/methods');
+      console.assert(res5.statusCode === 200, 'methods5: status');
+      console.assert(await res5.text() === 'POST', 'methods5: body');
+
+      const res6 = await ua.put('/methods');
+      console.assert(res6.statusCode === 200, 'methods6: status');
+      console.assert(await res6.text() === 'PUT', 'methods6: body');
+
+      const res7 = await ua.head('/hello');
+      console.assert(res7.statusCode === 200, 'methods7: status');
+      console.assert(res7.get('Content-Length') === '12', 'methods7: Content-Length header');
+      console.assert(await res7.text() === '', 'methods7: body');
+
+      const res8 = await ua.request({method: 'PUT', url: '/methods'});
+      console.assert(res8.statusCode === 200, 'methods8: status');
+      console.assert(await res8.text() === 'PUT', 'methods8: body');
+    }
+
     // Basic authentication
     {
       const res = await ua.get('/auth/basic', {auth: 'foo:bar'});

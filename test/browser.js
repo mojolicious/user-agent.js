@@ -1,5 +1,5 @@
 import {app} from './support/test-app/index.js';
-import {Server} from '@mojojs/core';
+import {Server, util} from '@mojojs/core';
 import {chromium} from 'playwright';
 import t from 'tap';
 
@@ -28,6 +28,9 @@ t.test('UserAgent (browser)', async t => {
   t.equal(await page.innerText('#tests'), 'Tests finished!');
 
   t.same(assertLogs, []);
+
+  // Increase to 30000 for headful debugging in the browser
+  util.sleep(3);
 
   await context.close();
   await browser.close();

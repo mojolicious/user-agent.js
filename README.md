@@ -177,6 +177,8 @@ Of course you can also just disable cookies completely.
 ua.httpTransport.cookieJar = null;
 ```
 
+In browsers the native browser cookie jar will be used instead.
+
 ## Installation
 
 All you need is Node.js 16.8.0 (or newer).

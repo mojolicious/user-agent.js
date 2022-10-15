@@ -72,6 +72,9 @@ const res = await ua.request({
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
+  // Disable TLS certificate validation (only has an effect in Node.js)
+  insecure: true,
+
   // Basic authentication
   auth: 'user:password'
 });

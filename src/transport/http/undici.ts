@@ -2,7 +2,7 @@ import type {UserAgentRequestOptions} from '../../types.js';
 import {format} from 'node:url';
 import {UserAgentResponse} from '../../response.js';
 import tough from 'tough-cookie';
-import {fetch} from 'undici';
+import {Agent, fetch} from 'undici';
 
 export class UndiciTransport {
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
@@ -10,13 +10,19 @@ export class UndiciTransport {
   async request(options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const url = (options.url ?? '').toString();
     const cookies = await this._loadCookies(url);
+    const agent = {
+      keepAliveTimeout: 10,
+      keepAliveMaxTimeout: 10,
+      connect: options.insecure === true ? {rejectUnauthorized: false} : {}
+    };
 
     const res = UserAgentResponse.fromWeb(
       await fetch(url, {
         body: options.body,
         headers: cookies === null ? options.headers : {...options.headers, Cookie: cookies},
         method: options.method,
-        redirect: 'manual'
+        redirect: 'manual',
+        dispatcher: new Agent(agent)
       })
     );
 

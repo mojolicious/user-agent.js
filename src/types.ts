@@ -17,6 +17,7 @@ export interface UserAgentRequestOptions {
   form?: Record<string, string>;
   formData?: Record<string, any>;
   headers?: Record<string, string>;
+  insecure?: boolean;
   json?: any;
   method?: string;
   query?: Record<string, string>;

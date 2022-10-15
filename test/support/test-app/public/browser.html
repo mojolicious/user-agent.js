@@ -83,6 +83,25 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Form
+    {
+      const res = await ua.post('/form', {form: {foo: 'works'}});
+      console.assert(res.statusCode === 200, 'form: status');
+      console.assert(await res.text() === 'Form: works, missing', 'form: body');
+
+      const res2 = await ua.post('/form', {form: {foo: 'works', bar: 'too'}});
+      console.assert(res2.statusCode === 200, 'form2: status');
+      console.assert(await res2.text() === 'Form: works, too', 'form2: body');
+
+      const res3 = await ua.post('/form', {json: {foo: 'works', bar: 'too'}});
+      console.assert(res3.statusCode === 200, 'form3: status');
+      console.assert(await res3.text() === 'Form: missing, missing', 'form3: body');
+
+      const res4 = await ua.post('/form', {form: {foo: 'w(o-&2F%2F)r k  s', bar: '%&!@#$%^&*&&%'}});
+      console.assert(res4.statusCode === 200, 'form4: status');
+      console.assert(await res4.text() === 'Form: w(o-&2F%2F)r k  s, %&!@#$%^&*&&%', 'form4: body');
+    }
+
     // Methods
     {
       const res = await ua.delete('/methods');

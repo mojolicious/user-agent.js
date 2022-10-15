@@ -15,11 +15,17 @@ t.test('UserAgent (browser)', async t => {
 
   const assertLogs = [];
   page.on('console', message => {
-    if (message.type() === 'assert') assertLogs.push(message.text());
+    const type = message.type();
+    const text = message.text();
+    if (type === 'assert') {
+      assertLogs.push(text);
+    } else {
+      console.warn(`${type}: ${text}`);
+    }
   });
 
   await page.goto(`${url}static/browser.html`);
-  t.equal(await page.innerText('#hello'), 'Hello World!');
+  t.equal(await page.innerText('#tests'), 'Tests finished!');
 
   t.same(assertLogs, []);
 

@@ -83,6 +83,19 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Query
+    {
+      const res = await ua.get('/headers', {query: {header: 'user-agent'}});
+      console.assert(res.statusCode === 200, 'query: status');
+      console.assert(res.get('X-Test') === 'works too', 'query: X-Test header');
+      console.assert(await res.text(), 'mojo 1.0', 'query: body');
+
+      const res2 = await ua.get('/status', {query: {status: 201, test: 'works'}});
+      console.assert(res2.statusCode === 201, 'query2: status');
+      console.assert(res2.get('X-Test') === 'works', 'query2: X-Test headers');
+      console.assert(await res2.text() === '', 'query2: body');
+    }
+
     // JSON
     {
       const res = await ua.get('/hello.json');

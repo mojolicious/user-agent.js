@@ -83,6 +83,13 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // JSON
+    {
+      const res = await ua.get('/hello.json');
+      console.assert(res.statusCode === 200, 'json: status');
+      console.assert((await res.json()).hello === 'world', 'json: body');
+    }
+
     // Form
     {
       const res = await ua.post('/form', {form: {foo: 'works'}});

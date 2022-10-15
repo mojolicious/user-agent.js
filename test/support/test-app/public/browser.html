@@ -12,49 +12,106 @@
     // Hello World!
     {
       const res = await ua.get('/hello');
-      console.assert(res.statusCode === 200, 'Hello status');
-      console.assert(await res.text() === 'Hello World!', 'Hello body');
+      console.assert(res.statusCode === 200, 'hello: status');
+      console.assert(await res.text() === 'Hello World!', 'hello: body');
     }
 
     // Custom request
     {
       const res = await ua.request({url: '/hello'});
-      console.assert(res.statusCode === 200, 'Custom status');
-      console.assert(await res.text() === 'Hello World!', 'Custom body');
+      console.assert(res.statusCode === 200, 'custom: status');
+      console.assert(await res.text() === 'Hello World!', 'custom: body');
 
       const res2 = await ua.request({});
-      console.assert(res2.statusCode === 404, 'Custom status two');
+      console.assert(res2.statusCode === 404, 'custom2: status');
+    }
+
+    // Status
+    {
+      const res = await ua.get('/status?status=200');
+      console.assert(res.isSuccess === true, 'status: is success');
+      console.assert(res.isError === false, 'status: is error');
+      console.assert(res.isClientError === false, 'status: is client error');
+      console.assert(res.isServerError === false, 'status: is server error');
+      console.assert(res.isRedirect === false, 'status: is redirect');
+      console.assert(res.statusCode === 200, 'status: status');
+      console.assert(await res.text() === '', 'status: body');
+
+      const res2 = await ua.get('/status?status=201');
+      console.assert(res2.isSuccess === true, 'status2: is success');
+      console.assert(res2.isError === false, 'status2: is error');
+      console.assert(res2.isClientError === false, 'status2: is client error');
+      console.assert(res2.isServerError === false, 'status2: is server error');
+      console.assert(res2.isRedirect === false, 'status2: is redirect');
+      console.assert(res2.statusCode === 201, 'status2: status');
+      console.assert(await res2.text() === '', 'status2: body');
+
+      const res3 = await ua.get('/status?status=404');
+      console.assert(res3.isSuccess === false, 'status3: is success');
+      console.assert(res3.isError === true, 'status3: is error');
+      console.assert(res3.isClientError === true, 'status3: is client error');
+      console.assert(res3.isServerError === false, 'status3: is server error');
+      console.assert(res3.isRedirect === false, 'status3: is redirect');
+      console.assert(res3.statusCode === 404, 'status3: status');
+      console.assert(await res3.text() === '', 'status3: body');
+
+      const res4 = await ua.get('/status?status=500');
+      console.assert(res4.isSuccess === false, 'status4: is success');
+      console.assert(res4.isError === true, 'status4: is error');
+      console.assert(res4.isClientError === false, 'status4: is client error');
+      console.assert(res4.isServerError === true, 'status4: is server error');
+      console.assert(res4.isRedirect === false, 'status4: is redirect');
+      console.assert(res4.statusCode === 500, 'status4: status');
+      console.assert(await res4.text() === '', 'status4: body');
+
+      const res5 = await ua.get('/status?status=599');
+      console.assert(res5.isSuccess === false, 'status5: is success');
+      console.assert(res5.isError === true, 'status5: is error');
+      console.assert(res5.isClientError === false, 'status5: is client error');
+      console.assert(res5.isServerError === true, 'status5: is server error');
+      console.assert(res5.isRedirect === false, 'status5: is redirect');
+      console.assert(res5.statusCode === 599, 'status5: status');
+      console.assert(await res5.text() === '', 'status5: body');
+
+      const res6 = await ua.get('/status?status=299');
+      console.assert(res6.isSuccess === true, 'status6: is success');
+      console.assert(res6.isError === false, 'status6: is error');
+      console.assert(res6.isClientError === false, 'status6: is client error');
+      console.assert(res6.isServerError === false, 'status6: is server error');
+      console.assert(res6.isRedirect === false, 'status6: is redirect');
+      console.assert(res6.statusCode === 299, 'status6: status');
+      console.assert(await res6.text() === '', 'status6: body');
     }
 
     // HTML/XML
     {
       const res = await ua.get('/test.html');
       const html = await res.html();
-      console.assert(html.at('div').text() === 'Test123', 'HTML text');
+      console.assert(html.at('div').text() === 'Test123', 'HTML: text');
 
       const res2 = await ua.get('/test.xml');
       const xml = await res2.xml();
-      console.assert(xml.find('script p').length === 1, 'XML find');
-      console.assert(xml.at('script p').text() === 'Hello', 'XML text');
+      console.assert(xml.find('script p').length === 1, 'XML: find');
+      console.assert(xml.at('script p').text() === 'Hello', 'XML: text');
 
       const res3 = await ua.get('/test.xml');
       const html2 = await res3.html();
-      console.assert(html2.at('script p') === null, 'XML is not HTML');
+      console.assert(html2.at('script p') === null, 'XML2: is not HTML');
     }
 
     // Cookie
     {
       const res = await ua.get('/cookie');
-      console.assert(res.statusCode === 200, 'Cookie status');
-      console.assert(await res.text() === 'Cookie: not present', 'Cookie body');
+      console.assert(res.statusCode === 200, 'cookie: status');
+      console.assert(await res.text() === 'Cookie: not present', 'cookie: body');
 
       const res2 = await ua.get('/cookie');
-      console.assert(res2.statusCode === 200, 'Cookie status two');
-      console.assert(await res2.text() === 'Cookie: present', 'Cookie body two');
+      console.assert(res2.statusCode === 200, 'cookie2: status');
+      console.assert(await res2.text() === 'Cookie: present', 'cookie2: body');
 
       const res3 = await ua.get('/cookie');
-      console.assert(res3.statusCode === 200, 'Cookie status three');
-      console.assert(await res3.text() === 'Cookie: present', 'Cookie body three');
+      console.assert(res3.statusCode === 200, 'cookie3: status');
+      console.assert(await res3.text() === 'Cookie: present', 'cookie3: body');
     }
 
     document.write('<div id="tests">Tests finished!</div>');

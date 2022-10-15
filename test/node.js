@@ -6,7 +6,7 @@ import t from 'tap';
 t.test('UserAgent (node)', async t => {
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
-  const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0'});
+  const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0', maxRedirects: 0});
 
   await t.test('Hello World', async t => {
     const res = await ua.get('/hello');

@@ -35,7 +35,7 @@ const ua = new UserAgent({
   // Base URL to be used to resolve all relative request URLs with
   baseURL: 'http://127.0.0.1:3000',
 
-  // Maximum number of redirects to follow, default to none
+  // Maximum number of redirects to follow, defaults to 20 (only has an effect in Node.js)
   maxRedirects: 5,
 
   // Name of user agent to send with `User-Agent` header

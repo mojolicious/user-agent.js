@@ -83,6 +83,21 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Basic authentication
+    {
+      const res = await ua.get('/auth/basic', {auth: 'foo:bar'});
+      console.assert(res.statusCode === 200, 'basic: status');
+      console.assert(await res.text() === 'basic: foo:bar, body: nothing', 'basic: body');
+
+      const res2 = await ua.get('/auth/basic');
+      console.assert(res2.statusCode === 200, 'basic2: status');
+      console.assert(await res2.text() === 'basic: nothing, body: nothing', 'basic2: body');
+
+      const res3 = await ua.post('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
+      console.assert(res3.statusCode === 200, 'basic3: status');
+      console.assert(await res3.text() === 'basic: foo:bar:baz, body: test', 'basic3: body');
+    }
+
     // Redirect
     {
       const res = await ua.post('/redirect/301', {query: {location: new URL('/hello', ua.baseURL).toString()}});

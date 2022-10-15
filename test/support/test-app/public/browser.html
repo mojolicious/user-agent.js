@@ -83,6 +83,21 @@
       console.assert(await res6.text() === '', 'status6: body');
     }
 
+    // Headers
+    {
+      const res = await ua.get('/headers?header=user-agent');
+      console.assert(res.statusCode === 200, 'headers: status');
+      console.assert(res.get('X-Test') === 'works too', 'headers: X-Test header');
+      console.assert(res.get('X-Test2') === 'just, works, too', 'headers: X-Test2 header');
+      console.assert(/Mozilla/.test(await res.text()) === true, 'headers: body');
+
+      const res2 = await ua.get('/headers?header=test', {headers: {test: 'works'}});
+      console.assert(res2.statusCode === 200, 'headers2: status');
+      console.assert(res2.get('X-Test') === 'works too', 'headers2: X-Test header');
+      console.assert(res2.get('X-Test2') === 'just, works, too', 'headers2: X-Test2 header');
+      console.assert(await res2.text() === 'works', 'headers2: body');
+    }
+
     // Body
     {
       const res = await ua.put('/body', {body: 'Body works!'});

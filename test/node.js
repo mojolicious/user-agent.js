@@ -99,7 +99,7 @@ t.test('UserAgent (node)', async t => {
     const res2 = await ua.get('/headers?header=test', {headers: {test: 'works'}});
     t.equal(res2.statusCode, 200);
     t.equal(res2.get('X-Test'), 'works too');
-    t.equal(res.get('X-Test2'), 'just, works, too');
+    t.equal(res2.get('X-Test2'), 'just, works, too');
     t.equal(await res2.text(), 'works');
   });
 

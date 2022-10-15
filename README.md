@@ -38,7 +38,7 @@ const ua = new UserAgent({
   // Maximum number of redirects to follow, defaults to 20 (only has an effect in Node.js)
   maxRedirects: 5,
 
-  // Name of user agent to send with `User-Agent` header
+  // Name of user agent to send with `User-Agent` header (only has an effect in Node.js)
   name: 'mojoUA/1.0'
 });
 ```

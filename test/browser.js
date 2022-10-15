@@ -13,8 +13,15 @@ t.test('UserAgent (browser)', async t => {
   const url = server.urls[0];
   url.host = '127.0.0.1';
 
+  const assertLogs = [];
+  page.on('console', message => {
+    if (message.type() === 'assert') assertLogs.push(message.text());
+  });
+
   await page.goto(`${url}static/browser.html`);
   t.equal(await page.innerText('#hello'), 'Hello World!');
+
+  t.same(assertLogs, []);
 
   await context.close();
   await browser.close();

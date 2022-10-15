@@ -19,7 +19,7 @@ t.test('UserAgent (browser)', async t => {
     const text = message.text();
     if (type === 'assert') {
       assertLogs.push(text);
-    } else {
+    } else if (/^Failed to load resource/.test(text) === false) {
       console.warn(`${type}: ${text}`);
     }
   });

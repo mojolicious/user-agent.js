@@ -32,6 +32,21 @@
       console.assert(html2.at('script p') === null, 'XML is not HTML');
     }
 
+    // Cookie
+    {
+      const res = await ua.get('/cookie');
+      console.assert(res.statusCode === 200, 'Cookie status');
+      console.assert(await res.text() === 'Cookie: not present', 'Cookie body');
+
+      const res2 = await ua.get('/cookie');
+      console.assert(res2.statusCode === 200, 'Cookie status two');
+      console.assert(await res2.text() === 'Cookie: present', 'Cookie body two');
+
+      const res3 = await ua.get('/cookie');
+      console.assert(res3.statusCode === 200, 'Cookie status three');
+      console.assert(await res3.text() === 'Cookie: present', 'Cookie body three');
+    }
+
     document.write('<div id="tests">Tests finished!</div>');
   }
 

@@ -353,5 +353,14 @@ t.test('UserAgent (node)', async t => {
     t.equal(await res2.text(), 'Hello World!');
   });
 
+  await t.test('Decompression', async t => {
+    const res = await ua.get('/gzip');
+    t.equal(res.statusCode, 200);
+    t.not(res.get('content-length'), '2048');
+    t.equal(res.get('content-encoding'), 'gzip');
+    t.equal(res.get('vary'), 'Accept-Encoding');
+    t.equal(await res.text(), 'a'.repeat(2048));
+  });
+
   await server.stop();
 });

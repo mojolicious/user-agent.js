@@ -93,4 +93,6 @@ app.get('/cookie', ctx => {
   return ctx.render({text: `Cookie: ${foo}`});
 });
 
+app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
+
 app.start();

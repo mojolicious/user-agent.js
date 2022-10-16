@@ -238,6 +238,16 @@
       console.assert(await res3.text() === 'Cookie: present', 'cookie3: body');
     }
 
+    // Decompression
+    {
+      const res = await ua.get('/gzip');
+      console.assert(res.statusCode === 200, 'decompression: status');
+      console.assert(res.get('content-length') !== '2048', 'decompresion: Content-Length header');
+      console.assert(res.get('content-encoding') === 'gzip', 'decompression: Content-Encoding header');
+      console.assert(res.get('vary') === 'Accept-Encoding', 'decompression: Vary header');
+      console.assert(await res.text() === 'a'.repeat(2048), 'decompression: body');
+    }
+
     document.write('<div id="tests">Tests finished!</div>');
   }
 

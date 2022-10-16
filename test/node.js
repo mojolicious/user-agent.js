@@ -382,6 +382,7 @@ t.test('UserAgent (node)', async t => {
     t.match(output, /User-Agent: /i);
     t.match(output, /Client <<< Server/);
     t.match(output, /Content-Length: /i);
+    t.match(output, /Hello World!/);
   });
 
   await server.stop();

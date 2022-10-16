@@ -2,6 +2,7 @@ import type {HTTPTransportOptions, UserAgentRequestOptions} from '../../types.js
 import {format} from 'node:url';
 import {UserAgentHeaders} from '../../headers.js';
 import {UserAgentResponse} from '../../response.js';
+import {termEscape} from '@mojojs/util';
 import tough from 'tough-cookie';
 import {Agent, fetch} from 'undici';
 
@@ -90,6 +91,7 @@ class DebugInterceptor {
   }
 
   onData(...args: any[]): any {
+    process.stderr.write(termEscape(`-- Client <<< Server\n${args[0]}\n`));
     return this.handler.onData(...args);
   }
 

@@ -194,7 +194,7 @@ printed to `STDERR`.
 ```
 $ MOJO_CLIENT_DEBUG=1 node myapp.js
 -- Client >>> Server
-GET /index.html
+GET /hello.html
 accept: */*
 accept-language: *
 sec-fetch-mode: cors
@@ -206,6 +206,8 @@ Content-Type: text/plain; charset=utf-8
 Content-Length: 12
 Date: Mon, 02 May 2022 23:32:34 GMT
 Connection: close
+
+Hello World!
 ```
 
 ## Installation

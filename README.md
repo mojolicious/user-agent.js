@@ -35,10 +35,10 @@ const ua = new UserAgent({
   // Base URL to be used to resolve all relative request URLs with
   baseURL: 'http://127.0.0.1:3000',
 
-  // Maximum number of redirects to follow, defaults to 20 (only has an effect in Node.js)
+  // Maximum number of redirects to follow, defaults to 20 (only Node.js)
   maxRedirects: 5,
 
-  // Name of user agent to send with `User-Agent` header (only has an effect in Node.js)
+  // Name of user agent to send with `User-Agent` header (only Node.js)
   name: 'mojoUA/1.0'
 });
 ```
@@ -72,7 +72,7 @@ const res = await ua.request({
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
-  // Disable TLS certificate validation (only has an effect in Node.js)
+  // Disable TLS certificate validation (only Node.js)
   insecure: true,
 
   // Basic authentication

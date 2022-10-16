@@ -7,7 +7,7 @@ export interface HTTPTransport {
 
 export interface HTTPTransportOptions {
   insecure: boolean;
-  keepAlive: number | null;
+  keepAlive: number | null | undefined;
 }
 
 export interface UserAgentOptions {

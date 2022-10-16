@@ -188,8 +188,8 @@ Responses with `gzip` or `deflate` content encoding will be decompressed transpa
 
 ### Introspection
 
-You can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information printed to
-`STDERR`.
+With Node.js you can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information
+printed to `STDERR`.
 
 ```
 $ MOJO_CLIENT_DEBUG=1 node myapp.js

@@ -186,6 +186,28 @@ In browsers the native browser cookie jar will be used instead.
 
 Responses with `gzip` or `deflate` content encoding will be decompressed transparently.
 
+### Introspection
+
+You can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information printed to
+`STDERR`.
+
+```
+$ MOJO_CLIENT_DEBUG=1 node myapp.js
+-- Client >>> Server
+GET /index.html
+accept: */*
+accept-language: *
+sec-fetch-mode: cors
+accept-encoding: gzip, deflate
+
+-- Client <<< Server
+200 OK
+Content-Type: text/plain; charset=utf-8
+Content-Length: 12
+Date: Mon, 02 May 2022 23:32:34 GMT
+Connection: close
+```
+
 ## Installation
 
 All you need is Node.js 16.8.0 (or newer).

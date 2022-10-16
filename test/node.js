@@ -1,6 +1,7 @@
 import UserAgent from '../lib/node.js';
 import {app} from './support/test-app/index.js';
 import {Server} from '@mojojs/core';
+import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 
 t.test('UserAgent (node)', async t => {
@@ -360,6 +361,27 @@ t.test('UserAgent (node)', async t => {
     t.equal(res.get('content-encoding'), 'gzip');
     t.equal(res.get('vary'), 'Accept-Encoding');
     t.equal(await res.text(), 'a'.repeat(2048));
+  });
+
+  await t.test('MOJO_CLIENT_DEBUG', async t => {
+    process.env.MOJO_CLIENT_DEBUG = 1;
+    const ua = new UserAgent({baseURL: server.urls[0]});
+
+    let res;
+    const captured = await captureOutput(
+      async () => {
+        res = await ua.get('/hello');
+      },
+      {stderr: true, stdout: false}
+    );
+    t.equal(res.statusCode, 200);
+    t.equal(await res.text(), 'Hello World!');
+    const output = captured.toString();
+    t.match(output, /Client >>> Server/);
+    t.match(output, /GET \/hello/);
+    t.match(output, /User-Agent: /i);
+    t.match(output, /Client <<< Server/);
+    t.match(output, /Content-Length: /i);
   });
 
   await server.stop();

@@ -12,9 +12,9 @@ export class UndiciTransport {
     const keepAliveTimeout = options.keepAlive ?? 1000;
     this.agent = new Agent({
       connect: options.insecure === true ? {rejectUnauthorized: false} : {},
-      pipelining: options.keepAlive === null ? 0 : 1,
       keepAliveTimeout: keepAliveTimeout,
-      keepAliveMaxTimeout: keepAliveTimeout
+      keepAliveMaxTimeout: keepAliveTimeout,
+      pipelining: options.keepAlive === null ? 0 : 1
     });
   }
 
@@ -25,10 +25,10 @@ export class UndiciTransport {
     const res = UserAgentResponse.fromWeb(
       await fetch(url, {
         body: options.body,
+        dispatcher: this.agent,
         headers: cookies === null ? options.headers : {...options.headers, Cookie: cookies},
         method: options.method,
-        redirect: 'manual',
-        dispatcher: this.agent
+        redirect: 'manual'
       })
     );
 

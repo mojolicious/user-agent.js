@@ -339,5 +339,19 @@ t.test('UserAgent (node)', async t => {
     t.equal(await res4.text(), 'Cookie: not present');
   });
 
+  await t.test('Keep-alive', async t => {
+    const ua = new UserAgent({baseURL: server.urls[0], keepAlive: 1000});
+    const res = await ua.get('/hello');
+    t.equal(res.statusCode, 200);
+    t.equal(res.get('Connection'), 'keep-alive');
+    t.equal(await res.text(), 'Hello World!');
+
+    const ua2 = new UserAgent({baseURL: server.urls[0], keepAlive: null});
+    const res2 = await ua2.get('/hello');
+    t.equal(res2.statusCode, 200);
+    t.equal(res2.get('Connection'), 'close');
+    t.equal(await res2.text(), 'Hello World!');
+  });
+
   await server.stop();
 });

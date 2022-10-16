@@ -11,15 +11,16 @@ t.test('UserAgent (node TLS)', async t => {
 
   const server = new Server(app, {listen: [`https://127.0.0.1`], quiet: true});
   await server.start();
-  const ua = new UserAgent({baseURL: server.urls[0]});
 
   await t.test('HTTPS (self signed cert is accepted in insecure mode)', async () => {
-    const res = await ua.get('/', {insecure: true});
+    const ua = new UserAgent({baseURL: server.urls[0], insecure: true});
+    const res = await ua.get('/');
     t.equal(res.statusCode, 200);
     t.equal(await res.text(), 'HTTPS: true');
   });
 
   await t.test('HTTPS (self signed cert is rejected by default)', async () => {
+    const ua = new UserAgent({baseURL: server.urls[0]});
     let result;
     try {
       await ua.get('/');

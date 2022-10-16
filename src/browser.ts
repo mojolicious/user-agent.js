@@ -7,7 +7,7 @@ export {UserAgentResponse} from './response.js';
 
 export default class BrowserUserAgent {
   baseURL: string | URL | undefined;
-  httpTransport: HTTPTransport = new FetchTransport();
+  httpTransport: HTTPTransport;
   maxRedirects: number;
   name: string | undefined;
 
@@ -15,6 +15,8 @@ export default class BrowserUserAgent {
     this.baseURL = options.baseURL;
     this.maxRedirects = options.maxRedirects ?? 20;
     this.name = options.name;
+
+    this.httpTransport = new FetchTransport();
   }
 
   /**

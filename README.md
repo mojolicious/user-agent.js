@@ -35,6 +35,12 @@ const ua = new UserAgent({
   // Base URL to be used to resolve all relative request URLs with
   baseURL: 'http://127.0.0.1:3000',
 
+  // Disable TLS certificate validation (only Node.js)
+  insecure: true,
+
+  // Keep-alive timeout, disabled with `null`, defaults to 1000 (only Node.js)
+  keepAlive: 3000,
+
   // Maximum number of redirects to follow, defaults to 20 (only Node.js)
   maxRedirects: 5,
 
@@ -71,9 +77,6 @@ const res = await ua.request({
 
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
-
-  // Disable TLS certificate validation (only Node.js)
-  insecure: true,
 
   // Basic authentication
   auth: 'user:password'

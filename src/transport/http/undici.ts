@@ -1,20 +1,26 @@
-import type {UserAgentRequestOptions} from '../../types.js';
+import type {HTTPTransportOptions, UserAgentRequestOptions} from '../../types.js';
 import {format} from 'node:url';
 import {UserAgentResponse} from '../../response.js';
 import tough from 'tough-cookie';
 import {Agent, fetch} from 'undici';
 
 export class UndiciTransport {
+  agent: Agent;
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
+
+  constructor(options: HTTPTransportOptions) {
+    const keepAliveTimeout = options.keepAlive ?? 1000;
+    this.agent = new Agent({
+      connect: options.insecure === true ? {rejectUnauthorized: false} : {},
+      pipelining: options.keepAlive === null ? 0 : 1,
+      keepAliveTimeout: keepAliveTimeout,
+      keepAliveMaxTimeout: keepAliveTimeout
+    });
+  }
 
   async request(options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const url = (options.url ?? '').toString();
     const cookies = await this._loadCookies(url);
-    const agent = {
-      keepAliveTimeout: 10,
-      keepAliveMaxTimeout: 10,
-      connect: options.insecure === true ? {rejectUnauthorized: false} : {}
-    };
 
     const res = UserAgentResponse.fromWeb(
       await fetch(url, {
@@ -22,7 +28,7 @@ export class UndiciTransport {
         headers: cookies === null ? options.headers : {...options.headers, Cookie: cookies},
         method: options.method,
         redirect: 'manual',
-        dispatcher: new Agent(agent)
+        dispatcher: this.agent
       })
     );
 

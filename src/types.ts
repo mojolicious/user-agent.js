@@ -5,8 +5,15 @@ export interface HTTPTransport {
   request: (options: UserAgentRequestOptions) => Promise<UserAgentResponse>;
 }
 
+export interface HTTPTransportOptions {
+  insecure: boolean;
+  keepAlive: number | null;
+}
+
 export interface UserAgentOptions {
   baseURL?: string | URL;
+  insecure?: boolean;
+  keepAlive?: number | null;
   maxRedirects?: number;
   name?: string;
 }
@@ -17,7 +24,6 @@ export interface UserAgentRequestOptions {
   form?: Record<string, string>;
   formData?: Record<string, any>;
   headers?: Record<string, string>;
-  insecure?: boolean;
   json?: any;
   method?: string;
   query?: Record<string, string>;

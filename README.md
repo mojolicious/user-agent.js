@@ -182,6 +182,10 @@ ua.httpTransport.cookieJar = null;
 
 In browsers the native browser cookie jar will be used instead.
 
+### Compression
+
+Responses with `gzip` or `deflate` content encoding will be decompressed transparently.
+
 ## Installation
 
 All you need is Node.js 16.8.0 (or newer).

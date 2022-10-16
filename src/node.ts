@@ -10,7 +10,7 @@ export default class NodeUserAgent extends BrowserUserAgent {
     super(options);
 
     this.httpTransport = new UndiciTransport({
-      insecure: options.insecure ?? false,
+      insecure: options.insecure,
       keepAlive: options.keepAlive
     });
   }

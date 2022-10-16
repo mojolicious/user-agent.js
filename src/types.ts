@@ -6,8 +6,8 @@ export interface HTTPTransport {
 }
 
 export interface HTTPTransportOptions {
-  insecure: boolean;
-  keepAlive: number | null | undefined;
+  insecure?: boolean;
+  keepAlive?: number | null;
 }
 
 export interface UserAgentOptions {

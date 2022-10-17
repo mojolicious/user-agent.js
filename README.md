@@ -11,7 +11,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/mojolicious/user-agent.js/badge.svg?branch=main)](https://coveralls.io/github/mojolicious/user-agent.js?branch=main)
 [![npm](https://img.shields.io/npm/v/@mojojs/user-agent.svg)](https://www.npmjs.com/package/@mojojs/user-agent)
 
-A powerful user-agent for Node.js and browsers. Written in TypeScript. **VERY EXPERIMENTAL, DO NOT USE!**
+A powerful user-agent for Node.js and browsers. Written in TypeScript. **VERY EXPERIMENTAL!**
 
 ```js
 import UserAgent from '@mojojs/user-agent';

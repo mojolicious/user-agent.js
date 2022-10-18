@@ -22,7 +22,7 @@ export interface UserAgentRequestOptions {
   auth?: string;
   body?: string;
   form?: Record<string, string>;
-  formData?: Record<string, any>;
+  formData?: Record<string, string | {content?: string | Blob; filename?: string; file?: string}> | FormData;
   headers?: Record<string, string>;
   json?: any;
   method?: string;

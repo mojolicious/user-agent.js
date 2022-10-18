@@ -148,6 +148,21 @@
       console.assert(await res4.text() === 'Form: w(o-&2F%2F)r k  s, %&!@#$%^&*&&%', 'form4: body');
     }
 
+    // multipart/form-data
+    {
+      const res = await ua.post('/form/data', {formData: {first: 'works'}});
+      console.assert(res.statusCode === 200, 'multipart: status');
+      const data = await res.json();
+      console.assert(data.first === 'works', 'multipart: json1');
+      console.assert(data.second === 'missing', 'multipart: json2');
+
+      const res2 = await ua.post('/form/data', {formData: {first: 'One', second: 'Two'}});
+      console.assert(res2.statusCode === 200, 'multipart2: status');
+      const data2 = await res2.json();
+      console.assert(data2.first === 'One', 'multipart2: json1');
+      console.assert(data2.second === 'Two', 'multipart2: json2');
+    }
+
     // Methods
     {
       const res = await ua.delete('/methods');

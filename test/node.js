@@ -150,6 +150,16 @@ t.test('UserAgent (node)', async t => {
     t.equal(await res4.text(), 'Form: w(o-&2F%2F)r k  s, %&!@#$%^&*&&%');
   });
 
+  await t.test('multipart/form-data', async () => {
+    const res = await ua.post('/form/data', {formData: {first: 'works'}});
+    t.equal(res.statusCode, 200);
+    t.same(await res.json(), {first: 'works', second: 'missing'});
+
+    const res2 = await ua.post('/form/data', {formData: {first: 'One', second: 'Two'}});
+    t.equal(res2.statusCode, 200);
+    t.same(await res2.json(), {first: 'One', second: 'Two'});
+  });
+
   await t.test('Methods', async t => {
     const res = await ua.delete('/methods');
     t.equal(res.statusCode, 200);

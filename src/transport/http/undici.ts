@@ -4,7 +4,7 @@ import {UserAgentHeaders} from '../../headers.js';
 import {UserAgentResponse} from '../../response.js';
 import {termEscape} from '@mojojs/util';
 import tough from 'tough-cookie';
-import {Agent, fetch} from 'undici';
+import {Agent, FormData, fetch} from 'undici';
 
 export class UndiciTransport {
   agent: Agent;
@@ -25,9 +25,17 @@ export class UndiciTransport {
     const url = (options.url ?? '').toString();
     const cookies = await this._loadCookies(url);
 
+    let formData: FormData | undefined;
+    if (options.formData !== undefined) {
+      formData = new FormData();
+      for (const [name, value] of Object.entries(options.formData)) {
+        formData.append(name, value);
+      }
+    }
+
     const res = UserAgentResponse.fromWeb(
       await fetch(url, {
-        body: options.body,
+        body: formData !== undefined ? formData : options.body,
         dispatcher: this.agent,
         headers: cookies === null ? options.headers : {...options.headers, Cookie: cookies},
         method: options.method,

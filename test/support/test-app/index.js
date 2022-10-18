@@ -34,6 +34,12 @@ app.post('/form', async ctx => {
   return ctx.render({text: `Form: ${foo}, ${bar}`});
 });
 
+app.post('/form/data', async ctx => {
+  const form = await ctx.req.form();
+  const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
+  return ctx.render({json: data});
+});
+
 app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
 
 app.get('/hello', {ext: 'yaml'}, ctx => ctx.render({yaml: {hello: 'world'}}));

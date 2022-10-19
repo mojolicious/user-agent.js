@@ -4,10 +4,12 @@ import {UserAgentResponse} from '../../response.js';
 export class FetchTransport {
   async request(options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     let formData: FormData | undefined;
-    if (options.formData !== undefined) {
+    if (options.formData instanceof FormData) {
+      formData = options.formData;
+    } else if (options.formData !== undefined) {
       formData = new FormData();
       for (const [name, value] of Object.entries(options.formData)) {
-        formData.append(name, value);
+        if (typeof value === 'string') formData.append(name, value);
       }
     }
 

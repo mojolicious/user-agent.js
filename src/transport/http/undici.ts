@@ -26,7 +26,9 @@ export class UndiciTransport {
     const cookies = await this._loadCookies(url);
 
     let formData: FormData | undefined;
-    if (options.formData !== undefined) {
+    if (options.formData instanceof FormData) {
+      formData = options.formData;
+    } else if (options.formData !== undefined) {
       formData = new FormData();
       for (const [name, value] of Object.entries(options.formData)) {
         formData.append(name, value);

@@ -3,6 +3,7 @@ import {app} from './support/test-app/index.js';
 import {Server} from '@mojojs/core';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
+import {FormData} from 'undici';
 
 t.test('UserAgent (node)', async t => {
   const server = new Server(app, {listen: ['http://*'], quiet: true});
@@ -158,6 +159,12 @@ t.test('UserAgent (node)', async t => {
     const res2 = await ua.post('/form/data', {formData: {first: 'One', second: 'Two'}});
     t.equal(res2.statusCode, 200);
     t.same(await res2.json(), {first: 'One', second: 'Two'});
+
+    const formData = new FormData();
+    formData.append('first', 'works too');
+    const res3 = await ua.post('/form/data', {formData});
+    t.equal(res3.statusCode, 200);
+    t.same(await res3.json(), {first: 'works too', second: 'missing'});
   });
 
   await t.test('Methods', async t => {

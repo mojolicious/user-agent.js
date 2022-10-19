@@ -78,7 +78,7 @@ const res = await ua.request({
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
-  // Object with key/value pairs  to be sent in `multipart/form-data` format
+  // Object with key/value pairs or `FormData` object to be sent in `multipart/form-data` format
   formData: {fieldA: 'first value', fieldB: 'second value'},
 
   // Basic authentication

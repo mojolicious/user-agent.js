@@ -188,6 +188,18 @@ ua.httpTransport.cookieJar = null;
 
 In browsers the native browser cookie jar will be used instead.
 
+### Timeouts
+
+You can use an `AbortController` to make sure a request does not take longer than a certain amount of time. Once
+aborted the promise returned by `ua.get()` will reject.
+
+```js
+const controller = new AbortController();
+const signal = controller.signal;
+setTimeout(() => controller.abort(), 3000);
+const res = await ua.get('https://mojojs.org', {signal});
+```
+
 ### Compression
 
 Responses with `gzip` or `deflate` content encoding will be decompressed transparently.

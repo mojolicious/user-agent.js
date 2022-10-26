@@ -82,7 +82,10 @@ const res = await ua.request({
   formData: {fieldA: 'first value', fieldB: 'second value'},
 
   // Basic authentication
-  auth: 'user:password'
+  auth: 'user:password',
+
+  // An `AbortSignal` to abort the request
+  signal: controller.signal
 });
 ```
 

@@ -380,6 +380,21 @@ t.test('UserAgent (node)', async t => {
     t.equal(await res.text(), 'a'.repeat(2048));
   });
 
+  await t.test('Abort', async t => {
+    const ac = new AbortController();
+    const signal = ac.signal;
+    setTimeout(() => ac.abort(), 100);
+
+    let result;
+    try {
+      await ua.get('/abort', {signal});
+    } catch (error) {
+      result = error;
+    }
+
+    t.match(result, /aborted/);
+  });
+
   await t.test('MOJO_CLIENT_DEBUG', async t => {
     process.env.MOJO_CLIENT_DEBUG = 1;
     const ua = new UserAgent({baseURL: server.urls[0]});

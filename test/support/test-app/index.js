@@ -101,4 +101,8 @@ app.get('/cookie', ctx => {
 
 app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
 
+app.get('/abort', async () => {
+  // Do nothing
+});
+
 app.start();

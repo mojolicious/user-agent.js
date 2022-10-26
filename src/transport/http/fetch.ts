@@ -17,7 +17,8 @@ export class FetchTransport {
       await fetch(options.url ?? '', {
         body: formData !== undefined ? formData : options.body,
         headers: options.headers,
-        method: options.method
+        method: options.method,
+        signal: options.signal
       })
     );
   }

@@ -27,6 +27,7 @@ export interface UserAgentRequestOptions {
   json?: any;
   method?: string;
   query?: Record<string, string>;
+  signal?: AbortSignal;
   url?: string | URL;
 }
 

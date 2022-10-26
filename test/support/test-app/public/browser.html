@@ -271,6 +271,22 @@
       console.assert(await res.text() === 'a'.repeat(2048), 'decompression: body');
     }
 
+    // Abort
+    {
+      const ac = new AbortController();
+      const signal = ac.signal;
+      setTimeout(() => ac.abort(), 100);
+
+      let result;
+      try {
+        await ua.get('/abort', {signal});
+      } catch (error) {
+        result = error;
+      }
+
+      console.assert(/aborted/.test(result) === true, 'abort');
+    }
+
     document.write('<div id="tests">Tests finished!</div>');
   }
 

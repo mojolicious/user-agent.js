@@ -41,7 +41,8 @@ export class UndiciTransport {
         dispatcher: this.agent,
         headers: cookies === null ? options.headers : {...options.headers, Cookie: cookies},
         method: options.method,
-        redirect: 'manual'
+        redirect: 'manual',
+        signal: options.signal
       })
     );
 

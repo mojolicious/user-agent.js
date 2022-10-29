@@ -233,7 +233,7 @@ Hello World!
 
 ## Installation
 
-All you need is Node.js 16.8.0 (or newer).
+All you need is Node.js 18 (or newer).
 
 ```
 $ npm install @mojojs/user-agent

@@ -83,34 +83,34 @@ class DebugInterceptor {
     this.handler = handler;
   }
 
-  onConnect(...args: any[]): any {
+  onConnect(...args: any[]) {
     return this.handler.onConnect(...args);
   }
 
-  onError(...args: any[]): any {
+  onError(...args: any[]) {
     return this.handler.onError(...args);
   }
 
-  onUpgrade(...args: any[]): any {
+  onUpgrade(...args: any[]) {
     return this.handler.onUpgrade(...args);
   }
 
-  onHeaders(...args: any[]): any {
+  onHeaders(...args: any[]) {
     const headers = new UserAgentHeaders(args[1].map((buffer: Buffer) => buffer.toString()));
     process.stderr.write(`-- Client <<< Server\n${args[0]} ${args[3]}\n${headers.toString()}`);
     return this.handler.onHeaders(...args);
   }
 
-  onData(...args: any[]): any {
+  onData(...args: any[]) {
     process.stderr.write(termEscape(`-- Client <<< Server\n${args[0]}\n`));
     return this.handler.onData(...args);
   }
 
-  onComplete(...args: any[]): any {
+  onComplete(...args: any[]) {
     return this.handler.onComplete(...args);
   }
 
-  onBodySent(...args: any[]): any {
+  onBodySent(...args: any[]) {
     if (this.handler.onBodySent !== undefined) return this.handler.onComplete(...args);
   }
 }

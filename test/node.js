@@ -206,6 +206,14 @@ t.test('UserAgent (node)', async t => {
     const data4 = JSON.parse(await res4.text());
     t.same(data4.uploads, []);
     t.same(data4.params, {it: 'works'});
+
+    const res5 = await ua.post('/form/upload', {
+      formData: {test: {content: new Blob(['Hello!']), filename: 'test.txt'}, it: 'works'}
+    });
+    t.equal(res5.statusCode, 200);
+    const data5 = JSON.parse(await res5.text());
+    t.same(data5.uploads, [{fieldname: 'test', filename: 'test.txt', content: 'Hello!', limit: false}]);
+    t.same(data5.params, {it: 'works'});
   });
 
   await t.test('Methods', async t => {

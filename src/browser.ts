@@ -22,49 +22,49 @@ export default class BrowserUserAgent {
   /**
    * Perform `DELETE` request.
    */
-  async delete(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async delete(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'DELETE', ...options});
   }
 
   /**
    * Perform `GET` request.
    */
-  async get(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async get(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'GET', ...options});
   }
 
   /**
    * Perform `HEAD` request.
    */
-  async head(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async head(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'HEAD', ...options});
   }
 
   /**
    * Perform `OPTIONS` request.
    */
-  async options(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async options(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'OPTIONS', ...options});
   }
 
   /**
    * Perform `PATCH` request.
    */
-  async patch(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async patch(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'PATCH', ...options});
   }
 
   /**
    * Perform `POST` request.
    */
-  async post(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async post(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'POST', ...options});
   }
 
   /**
    * Perform `PUT` request.
    */
-  async put(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+  async put(url: string | URL = '/', options: UserAgentRequestOptions = {}): Promise<BrowserResponse> {
     return await this.request({url, method: 'PUT', ...options});
   }
 

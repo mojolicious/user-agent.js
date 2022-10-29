@@ -18,9 +18,58 @@ export default class NodeUserAgent extends BrowserUserAgent {
   }
 
   /**
+   * Perform `DELETE` request.
+   */
+  async delete(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'DELETE', ...options});
+  }
+
+  /**
+   * Perform `GET` request.
+   */
+  async get(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'GET', ...options});
+  }
+
+  /**
+   * Perform `HEAD` request.
+   */
+  async head(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'HEAD', ...options});
+  }
+
+  /**
+   * Perform `OPTIONS` request.
+   */
+  async options(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'OPTIONS', ...options});
+  }
+
+  /**
+   * Perform `PATCH` request.
+   */
+  async patch(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'PATCH', ...options});
+  }
+
+  /**
+   * Perform `POST` request.
+   */
+  async post(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'POST', ...options});
+  }
+
+  /**
+   * Perform `PUT` request.
+   */
+  async put(url: string | URL = '/', options: UserAgentRequestOptions = {}) {
+    return await this.request({url, method: 'PUT', ...options});
+  }
+
+  /**
    * Perform HTTP request.
    */
-  async request(config: UserAgentRequestOptions) {
+  async request(config: UserAgentRequestOptions): Promise<NodeResponse> {
     return new NodeResponse(await super.request(config));
   }
 }

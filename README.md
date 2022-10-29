@@ -167,6 +167,9 @@ const title = dom.at('title').text();
 // Parsed XML via `@mojojs/dom`
 const dom = await res.xml();
 
+// `stream.Readable` (only Node.js)
+const stream = res.createReadStream();
+
 // Pipe content to `stream.Writable` object (only Node.js)
 await res.pipe(process.stdout);
 ```

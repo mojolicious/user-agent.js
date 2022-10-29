@@ -5,6 +5,7 @@ import {UndiciTransport} from './transport/http/undici.js';
 
 export {UserAgentHeaders} from './headers.js';
 export {BrowserResponse} from './response/browser.js';
+export {NodeResponse} from './response/node.js';
 
 export default class NodeUserAgent extends BrowserUserAgent {
   constructor(options: UserAgentOptions = {}) {

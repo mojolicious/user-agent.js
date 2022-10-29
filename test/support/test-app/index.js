@@ -40,6 +40,26 @@ app.post('/form/data', async ctx => {
   return ctx.render({json: data});
 });
 
+// POST /form/upload
+app.post('/form/upload', async ctx => {
+  const uploads = [];
+  for await (const {fieldname, file, filename} of ctx.req.files({limits: {fileSize: 10}})) {
+    const upload = {fieldname, filename};
+    uploads.push(upload);
+
+    const parts = [];
+    for await (const chunk of file) {
+      parts.push(chunk);
+    }
+    upload.content = Buffer.concat(parts).toString();
+    upload.limit = file.truncated;
+  }
+
+  const params = await ctx.req.form();
+
+  return ctx.render({json: {uploads, params: params.toObject()}});
+});
+
 app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
 
 app.get('/hello', {ext: 'yaml'}, ctx => ctx.render({yaml: {hello: 'world'}}));

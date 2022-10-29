@@ -168,6 +168,46 @@ t.test('UserAgent (node)', async t => {
     t.same(await res3.json(), {first: 'works too', second: 'missing'});
   });
 
+  await t.test('Uploads', async t => {
+    const res = await ua.post('/form/upload', {
+      formData: {test: {content: 'Hello!', filename: 'test.txt'}, it: 'works'}
+    });
+    t.equal(res.statusCode, 200);
+    const data = JSON.parse(await res.text());
+    t.same(data.uploads, [{fieldname: 'test', filename: 'test.txt', content: 'Hello!', limit: false}]);
+    t.same(data.params, {it: 'works'});
+
+    const res2 = await ua.post('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test2.txt'}}});
+    t.equal(res2.statusCode, 200);
+    const data2 = JSON.parse(await res2.text());
+    t.same(data2.uploads, [{fieldname: 'test', filename: 'test2.txt', content: 'Hello Worl', limit: true}]);
+    t.same(data2.params, {});
+
+    const res3 = await ua.post('/form/upload', {
+      formData: {
+        test: {content: 'Hello', filename: 'test2.txt'},
+        test2: {content: 'World', filename: 'test3.txt'},
+        test3: {content: '!', filename: 'test4.txt'},
+        test4: 'One',
+        test5: 'Two'
+      }
+    });
+    t.equal(res3.statusCode, 200);
+    const data3 = JSON.parse(await res3.text());
+    t.same(data3.uploads, [
+      {fieldname: 'test', filename: 'test2.txt', content: 'Hello', limit: false},
+      {fieldname: 'test2', filename: 'test3.txt', content: 'World', limit: false},
+      {fieldname: 'test3', filename: 'test4.txt', content: '!', limit: false}
+    ]);
+    t.same(data3.params, {test4: 'One', test5: 'Two'});
+
+    const res4 = await ua.post('/form/upload', {formData: {it: 'works'}});
+    t.equal(res4.statusCode, 200);
+    const data4 = JSON.parse(await res4.text());
+    t.same(data4.uploads, []);
+    t.same(data4.params, {it: 'works'});
+  });
+
   await t.test('Methods', async t => {
     const res = await ua.delete('/methods');
     t.equal(res.statusCode, 200);

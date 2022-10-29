@@ -79,7 +79,7 @@ const res = await ua.request({
   form: {fieldA: 'first value', fieldB: 'second value'},
 
   // Object with key/value pairs or `FormData` object to be sent in `multipart/form-data` format
-  formData: {fieldA: 'first value', fieldB: 'second value'},
+  formData: {fieldA: 'first value', fieldB: 'second value', fieldC: {content: 'third value', filename: 'foo.txt'}},
 
   // Basic authentication
   auth: 'user:password',

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Test Suite</title>
+<body></body>
 <script type="module">
   import UserAgent from './browser.js';
 
@@ -301,7 +302,7 @@
       console.assert(/aborted/.test(result) === true, 'abort');
     }
 
-    document.write('<div id="tests">Tests finished!</div>');
+    document.body.innerHTML += '<div id="tests">Tests finished!</div>';
   }
 
   tests();

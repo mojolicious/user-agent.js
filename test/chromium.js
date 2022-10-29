@@ -3,7 +3,7 @@ import {Server, util} from '@mojojs/core';
 import {chromium} from 'playwright';
 import t from 'tap';
 
-t.test('UserAgent (browser)', async t => {
+t.test('UserAgent (chromium)', async t => {
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
 

@@ -115,7 +115,7 @@ app.any('/redirect/introspect/:code', ctx => ctx.redirectTo('introspect', {statu
 
 app.get('/cookie', ctx => {
   const foo = ctx.req.getCookie('foo') ?? 'not present';
-  if (foo === 'not present') ctx.res.setCookie('foo', 'present');
+  if (foo === 'not present') ctx.res.setCookie('foo', 'present', {sameSite: 'lax'});
   return ctx.render({text: `Cookie: ${foo}`});
 });
 

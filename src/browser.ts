@@ -22,52 +22,55 @@ export default class BrowserUserAgent {
   /**
    * Perform `DELETE` request.
    */
-  async delete(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('DELETE', url, options);
+  async delete(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'DELETE', ...options});
   }
 
   /**
    * Perform `GET` request.
    */
-  async get(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('GET', url, options);
+  async get(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'GET', ...options});
   }
 
   /**
    * Perform `HEAD` request.
    */
-  async head(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('HEAD', url, options);
+  async head(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'HEAD', ...options});
   }
 
   /**
    * Perform `OPTIONS` request.
    */
-  async options(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('OPTIONS', url, options);
+  async options(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'OPTIONS', ...options});
   }
 
   /**
    * Perform `PATCH` request.
    */
-  async patch(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('PATCH', url, options);
+  async patch(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'PATCH', ...options});
   }
 
   /**
    * Perform `POST` request.
    */
-  async post(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('POST', url, options);
+  async post(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'POST', ...options});
   }
 
   /**
    * Perform `PUT` request.
    */
-  async put(url: string | URL, options: UserAgentRequestOptions): Promise<BrowserResponse> {
-    return await this._requestConfig('PUT', url, options);
+  async put(url: string | URL = '/', options: UserAgentRequestOptions) {
+    return await this.request({url, method: 'PUT', ...options});
   }
 
+  /**
+   * Perform HTTP request.
+   */
   async request(config: UserAgentRequestOptions): Promise<BrowserResponse> {
     const filtered = this._filterConfig(config);
     let res = await this.httpTransport.request(filtered);
@@ -142,13 +145,5 @@ export default class BrowserUserAgent {
     }
 
     return res;
-  }
-
-  async _requestConfig(
-    method: string,
-    url: string | URL = '/',
-    options?: UserAgentRequestOptions
-  ): Promise<BrowserResponse> {
-    return await this.request({url, method, ...options});
   }
 }

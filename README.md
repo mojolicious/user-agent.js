@@ -166,6 +166,9 @@ const title = dom.at('title').text();
 
 // Parsed XML via `@mojojs/dom`
 const dom = await res.xml();
+
+// Pipe content to `stream.Writable` object (only Node.js)
+await res.pipe(process.stdout);
 ```
 
 For HTML and XML parsing [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) will be used. Making it very easy to

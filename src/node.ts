@@ -1,5 +1,6 @@
-import type {UserAgentOptions} from './types.js';
+import type {UserAgentOptions, UserAgentRequestOptions} from './types.js';
 import BrowserUserAgent from './browser.js';
+import {NodeResponse} from './response/node.js';
 import {UndiciTransport} from './transport/http/undici.js';
 
 export {UserAgentHeaders} from './headers.js';
@@ -13,5 +14,12 @@ export default class NodeUserAgent extends BrowserUserAgent {
       insecure: options.insecure,
       keepAlive: options.keepAlive
     });
+  }
+
+  /**
+   * Perform HTTP request.
+   */
+  async request(config: UserAgentRequestOptions) {
+    return new NodeResponse(await super.request(config));
   }
 }

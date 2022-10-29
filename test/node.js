@@ -1,6 +1,7 @@
 import UserAgent from '../lib/node.js';
 import {app} from './support/test-app/index.js';
 import {Server} from '@mojojs/core';
+import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 import {FormData} from 'undici';
@@ -378,6 +379,17 @@ t.test('UserAgent (node)', async t => {
     t.equal(res.get('content-encoding'), 'gzip');
     t.equal(res.get('vary'), 'Accept-Encoding');
     t.equal(await res.text(), 'a'.repeat(2048));
+  });
+
+  await t.test('Streams', async t => {
+    const res = await ua.put('/body', {body: 'Hello Mojo!'});
+    t.equal(res.statusCode, 200);
+    const dir = await Path.tempDir();
+    const file = await dir.child('hello.txt').touch();
+    const stream = file.createWriteStream();
+    await res.pipe(stream);
+    t.equal(stream.bytesWritten, 11);
+    t.equal(await file.readFile('utf8'), 'Hello Mojo!');
   });
 
   await t.test('Abort', async t => {

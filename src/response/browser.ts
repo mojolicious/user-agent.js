@@ -36,9 +36,9 @@ export class BrowserResponse {
     return result;
   }
 
-  static fromWeb(res: WebResponse): BrowserResponse {
+  static fromWeb(res: WebResponse) {
     const headers = UserAgentHeaders.fromWeb(res.headers);
-    return new BrowserResponse({body: res.body, headers, statusCode: res.status, statusMessage: res.statusText});
+    return new this({body: res.body, headers, statusCode: res.status, statusMessage: res.statusText});
   }
 
   get(name: string): string | null {

@@ -1,8 +1,8 @@
 import type {UserAgentRequestOptions} from '../../types.js';
-import {UserAgentResponse} from '../../response.js';
+import {BrowserResponse} from '../../response/browser.js';
 
 export class FetchTransport {
-  async request(options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async request(options: UserAgentRequestOptions): Promise<BrowserResponse> {
     let formData: FormData | undefined;
     if (options.formData instanceof FormData) {
       formData = options.formData;
@@ -13,7 +13,7 @@ export class FetchTransport {
       }
     }
 
-    return UserAgentResponse.fromWeb(
+    return BrowserResponse.fromWeb(
       await fetch(options.url ?? '', {
         body: formData !== undefined ? formData : options.body,
         headers: options.headers,

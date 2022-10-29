@@ -1,8 +1,8 @@
 import type {UserAgentHeaders} from './headers.js';
-import type {UserAgentResponse} from './response.js';
+import type {BrowserResponse} from './response/browser.js';
 
 export interface HTTPTransport {
-  request: (options: UserAgentRequestOptions) => Promise<UserAgentResponse>;
+  request: (options: UserAgentRequestOptions) => Promise<BrowserResponse>;
 }
 
 export interface HTTPTransportOptions {
@@ -31,7 +31,7 @@ export interface UserAgentRequestOptions {
   url?: string | URL;
 }
 
-export interface UserAgentResponseOptions {
+export interface ResponseOptions {
   body: ReadableStream<Uint8Array> | null;
   headers: UserAgentHeaders;
   statusCode: number;

@@ -1,6 +1,6 @@
-import type {ResponseOptions, WebResponse} from './types.js';
+import type {ResponseOptions, WebResponse} from '../types.js';
 import type {JSONValue} from '@mojojs/util';
-import {UserAgentHeaders} from './headers.js';
+import {UserAgentHeaders} from '../headers.js';
 import DOM from '@mojojs/dom';
 
 export class BrowserResponse {

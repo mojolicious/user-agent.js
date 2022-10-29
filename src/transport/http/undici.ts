@@ -1,7 +1,7 @@
 import type {HTTPTransportOptions, UserAgentRequestOptions} from '../../types.js';
 import {format} from 'node:url';
 import {UserAgentHeaders} from '../../headers.js';
-import {UserAgentResponse} from '../../response.js';
+import {BrowserResponse} from '../../response/browser.js';
 import {termEscape} from '@mojojs/util';
 import tough from 'tough-cookie';
 import {Agent, FormData, fetch} from 'undici';
@@ -21,7 +21,7 @@ export class UndiciTransport {
     });
   }
 
-  async request(options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async request(options: UserAgentRequestOptions): Promise<BrowserResponse> {
     const url = (options.url ?? '').toString();
     const cookies = await this._loadCookies(url);
 
@@ -35,7 +35,7 @@ export class UndiciTransport {
       }
     }
 
-    const res = UserAgentResponse.fromWeb(
+    const res = BrowserResponse.fromWeb(
       await fetch(url, {
         body: formData !== undefined ? formData : options.body,
         dispatcher: this.agent,

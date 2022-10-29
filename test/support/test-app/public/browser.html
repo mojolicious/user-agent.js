@@ -171,6 +171,20 @@
       console.assert(data3.second === 'missing', 'multipart3: json2');
     }
 
+    // Uploads
+    {
+      const res = await ua.post('/form/upload', {
+        formData: {test: {content: 'Hello!', filename: 'test.txt'}, it: 'works'}
+      });
+      console.assert(res.statusCode === 200, 'upload: status');
+      const data = JSON.parse(await res.text());
+      console.assert(data.uploads[0].fieldname === 'test' ,'upload: fieldname');
+      console.assert(data.uploads[0].filename === 'test.txt' ,'upload: filename');
+      console.assert(data.uploads[0].content === 'Hello!' ,'upload: content');
+      console.assert(data.uploads[0].limit === false ,'upload: limit');
+      console.assert(data.params.it === 'works', 'upload: params');
+    }
+
     // Methods
     {
       const res = await ua.delete('/methods');

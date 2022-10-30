@@ -8,12 +8,33 @@ export {BrowserResponse} from './response/browser.js';
 export {NodeResponse} from './response/node.js';
 
 interface NodeUserAgent {
+  /**
+   * Perform `DELETE` request.
+   */
   delete(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `GET` request.
+   */
   get(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `HEAD` request.
+   */
   head(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `OPTIONS` request.
+   */
   options(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `PATCH` request.
+   */
   patch(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `POST` request.
+   */
   post(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
+  /**
+   * Perform `PUT` request.
+   */
   put(url?: string | URL, options?: UserAgentRequestOptions): Promise<NodeResponse>;
 }
 

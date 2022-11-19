@@ -1,5 +1,16 @@
 type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
 
+const HOP_BY_HOP = [
+  'connection',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade'
+];
+
 /**
  * HTTP header class.
  */
@@ -26,6 +37,21 @@ export class UserAgentHeaders {
     }
   }
 
+  /**
+   * Clone headers.
+   */
+  clone(): UserAgentHeaders {
+    return new UserAgentHeaders(this.toArray());
+  }
+
+  /**
+   * Remove hop-by-hop headers that should not be retransmitted.
+   */
+  dehop(): void {
+    const headers = this._getHeaders();
+    HOP_BY_HOP.forEach(name => delete headers[name]);
+  }
+
   static fromWeb(headers: Headers): UserAgentHeaders {
     const init: string[] = [];
     headers.forEach((value, key) => init.push(key, value));
@@ -47,6 +73,13 @@ export class UserAgentHeaders {
   getAll(name: string): string[] {
     const values = this._getHeaders()[name.toLowerCase()]?.values ?? [];
     return [...values];
+  }
+
+  /**
+   * Remove header.
+   */
+  remove(name: string): void {
+    delete this._getHeaders()[name.toLowerCase()];
   }
 
   /**

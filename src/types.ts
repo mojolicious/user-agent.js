@@ -39,7 +39,7 @@ export interface ResponseOptions {
 }
 
 export interface WebResponse {
-  body: ReadableStream<Uint8Array> | null;
+  body: ReadableStream<Uint8Array> | null | any;
   headers: Headers;
   status: number;
   statusText: string;

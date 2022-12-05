@@ -48,7 +48,7 @@
     "@mojojs/core": "^1.6.0",
     "@mojojs/path": "^1.5.3",
     "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-terser": "^0.1.0",
+    "@rollup/plugin-terser": "^0.2.0",
     "@types/node": "^18.0.0",
     "@types/tap": "^15.0.3",
     "@types/tough-cookie": "^4.0.2",

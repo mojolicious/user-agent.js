@@ -1,14 +1,33 @@
 import type {BrowserResponse} from './response/browser.js';
 import type {HTTPTransport, UserAgentOptions, UserAgentRequestOptions} from './types.js';
 import {FetchTransport} from './transport/http/fetch.js';
+import {AsyncHooks} from '@mojojs/util';
 
 export {UserAgentHeaders} from './headers.js';
 export {BrowserResponse} from './response/browser.js';
 
+type UserAgentHook = (ua: BrowserUserAgent, ...args: any[]) => any;
+
 export default class BrowserUserAgent {
+  /**
+   * Base URL to be used to resolve all relative request URLs with.
+   */
   baseURL: string | URL | undefined;
+  /**
+   * User-agent hooks.
+   */
+  hooks = new AsyncHooks();
+  /**
+   * Transport backend to perform HTTP requests with.
+   */
   httpTransport: HTTPTransport;
+  /**
+   * Maximum number of redirects to follow, default to `0`.
+   */
   maxRedirects: number;
+  /**
+   * Name of user-agent to send with `User-Agent` header.
+   */
   name: string | undefined;
 
   constructor(options: UserAgentOptions = {}) {
@@ -17,6 +36,14 @@ export default class BrowserUserAgent {
     this.name = options.name;
 
     this.httpTransport = new FetchTransport();
+  }
+
+  /**
+   * Add a hook to extend the user-agent.
+   */
+  addHook(name: string, fn: UserAgentHook): this {
+    this.hooks.addHook(name, fn);
+    return this;
   }
 
   /**
@@ -73,6 +100,7 @@ export default class BrowserUserAgent {
    */
   async request(config: UserAgentRequestOptions): Promise<BrowserResponse> {
     const filtered = this._filterConfig(config);
+    await this.hooks.runHook('request', this, filtered);
     let res = await this.httpTransport.request(filtered);
     if (this.maxRedirects > 0) res = await this._handleRedirect(config, res);
     return res;

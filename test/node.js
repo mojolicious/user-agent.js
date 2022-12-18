@@ -440,6 +440,23 @@ t.test('UserAgent (node)', async t => {
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
   });
 
+  await t.test('Hooks', async t => {
+    ua.addHook('request', async (ua, config) => {
+      await new Promise(resolve => {
+        process.nextTick(resolve);
+      });
+      config.url.searchParams.append('status', 201);
+    });
+
+    const res = await ua.get('/status');
+    t.equal(res.statusCode, 201);
+    t.equal(await res.text(), '');
+
+    const res2 = await ua.get('/status');
+    t.equal(res2.statusCode, 201);
+    t.equal(await res2.text(), '');
+  });
+
   await t.test('Abort', async t => {
     const ac = new AbortController();
     const signal = ac.signal;

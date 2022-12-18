@@ -15,7 +15,7 @@ export class UndiciTransport {
     const keepAliveTimeout = options.keepAlive ?? 1000;
     this.agent = new Agent({
       connect: options.insecure === true ? {rejectUnauthorized: false} : {},
-      interceptors: {Client: process.env.MOJO_CLIENT_DEBUG === '1' ? [debugInterceptor] : []},
+      interceptors: {Client: process.env.MOJO_CLIENT_DEBUG === '1' ? [debugInterceptor] : []} as any,
       keepAliveTimeout: keepAliveTimeout,
       keepAliveMaxTimeout: keepAliveTimeout,
       pipelining: options.keepAlive === null ? 0 : 1

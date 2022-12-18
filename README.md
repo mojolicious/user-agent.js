@@ -27,7 +27,7 @@ used `fetch` before.
 
 ### User-Agent Options
 
-The user agent can be initialized with a few options, but none of them are required.
+The user-agent can be initialized with a few options, but none of them are required.
 
 ```js
 const ua = new UserAgent({
@@ -44,7 +44,7 @@ const ua = new UserAgent({
   // Maximum number of redirects to follow, defaults to 20 (only Node.js)
   maxRedirects: 5,
 
-  // Name of user agent to send with `User-Agent` header (only Node.js)
+  // Name of user-agent to send with `User-Agent` header (only Node.js)
   name: 'mojoUA/1.0'
 });
 ```
@@ -193,6 +193,22 @@ ua.httpTransport.cookieJar = null;
 ```
 
 In browsers the native browser cookie jar will be used instead.
+
+### Hooks
+
+Hooks can be used to extend the user-agent and run code for every HTTP request.
+
+```js
+// Add a header to every HTTP request
+ua.addHook('request', async (ua, config) => {
+  config.headers['X-Bender'] = 'Bite my shiny metal ass!';
+});
+
+// Add a query parameter to every HTTP request
+ua.addHook('request', async (ua, config) => {
+  config.url.searchParams.append('hello', 'mojo');
+});
+```
 
 ### Timeouts
 

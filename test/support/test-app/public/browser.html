@@ -286,6 +286,21 @@
       console.assert(await res.text() === 'a'.repeat(2048), 'decompression: body');
     }
 
+    // Hooks
+    {
+      ua.addHook('request', async (ua, config) => {
+        config.url.searchParams.append('status', 201);
+      });
+
+      const res = await ua.get('/status');
+      console.assert(res.statusCode === 201, 'hooks1: status');
+      console.assert(await res.text() === '', 'hooks1: body');
+
+      const res2 = await ua.get('/status');
+      console.assert(res2.statusCode === 201, 'hooks2: status');
+      console.assert(await res2.text() === '', 'hooks2: body');
+    }
+
     // Abort
     {
       const ac = new AbortController();

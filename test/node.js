@@ -1,5 +1,5 @@
-import UserAgent from '../lib/node.js';
 import {app} from './support/test-app/index.js';
+import UserAgent from '../lib/node.js';
 import {Server} from '@mojojs/core';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';

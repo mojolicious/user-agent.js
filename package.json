@@ -69,7 +69,7 @@
     "node": ">= 18"
   },
   "dependencies": {
-    "@mojojs/dom": "^2.0.0",
+    "@mojojs/dom": "^2.1.0",
     "@mojojs/util": "^1.5.0",
     "tough-cookie": "^4.1.2",
     "undici": "^5.10.0"

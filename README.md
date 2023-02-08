@@ -257,3 +257,9 @@ All you need is Node.js 18 (or newer).
 ```
 $ npm install @mojojs/user-agent
 ```
+
+## Support
+
+If you have any questions the documentation might not yet answer, don't hesitate to ask in the
+[Forum](https://github.com/mojolicious/mojo.js/discussions), on [Matrix](https://matrix.to/#/#mojo:matrix.org), or
+[IRC](https://web.libera.chat/#mojo).

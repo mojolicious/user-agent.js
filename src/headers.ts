@@ -1,3 +1,5 @@
+import {headerParams} from '@mojojs/util';
+
 type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
 
 const HOP_BY_HOP = [
@@ -25,7 +27,7 @@ export class UserAgentHeaders {
   /**
    * Append header value.
    */
-  append(name: string, value: string): void {
+  append(name: string, value: string): this {
     const lowerCase = name.toLowerCase();
     const headers = this._getHeaders();
     if (headers[lowerCase] === undefined) return this.set(name, value);
@@ -35,6 +37,8 @@ export class UserAgentHeaders {
     } else {
       headers[lowerCase].values = [[...headers[lowerCase].values, value].join(', ')];
     }
+
+    return this;
   }
 
   /**
@@ -47,9 +51,10 @@ export class UserAgentHeaders {
   /**
    * Remove hop-by-hop headers that should not be retransmitted.
    */
-  dehop(): void {
+  dehop(): this {
     const headers = this._getHeaders();
     HOP_BY_HOP.forEach(name => delete headers[name]);
+    return this;
   }
 
   static fromWeb(headers: Headers): UserAgentHeaders {
@@ -76,18 +81,57 @@ export class UserAgentHeaders {
   }
 
   /**
+   * Get web links from `Link` header according to RFC5988.
+   * @link http://tools.ietf.org/html/rfc5988
+   * @example
+   * // Extract information about next page
+   * const {link, title} = headers.getLinks().next;
+   */
+  getLinks(): Record<string, Record<string, string>> {
+    const data: Record<string, Record<string, string>> = {};
+
+    let value = this.get('Link') ?? '';
+    while (value.length > 0) {
+      const linkMatch = value.match(/^[,\s]*<(.+?)>(.+)$/);
+      if (linkMatch === null) break;
+      const link = linkMatch[1];
+      const {params, remainder} = headerParams(linkMatch[2]);
+      value = remainder;
+      if (params.rel !== undefined) data[params.rel] ??= {...params, link};
+    }
+
+    return data;
+  }
+
+  /**
    * Remove header.
    */
-  remove(name: string): void {
+  remove(name: string): this {
     delete this._getHeaders()[name.toLowerCase()];
+    return this;
   }
 
   /**
    * Set header value.
    */
-  set(name: string, value: string): void {
+  set(name: string, value: string): this {
     const lowerCase = name.toLowerCase();
     this._getHeaders()[lowerCase] = {normalCase: name, values: [value]};
+    return this;
+  }
+
+  /**
+   * Set web links to `Link` header according to RFC5988.
+   * @link http://tools.ietf.org/html/rfc5988
+   * @example
+   * // Link to next and previous page
+   * headers.setLinks({next: 'http://example.com/foo', prev: 'http://example.com/bar'});
+   */
+  setLinks(links: Record<string, string>): this {
+    const value = Object.entries(links)
+      .map(([rel, link]: [string, string]) => `<${link}>; rel="${rel}"`)
+      .join(', ');
+    return this.set('Link', value);
   }
 
   /**

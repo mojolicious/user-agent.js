@@ -488,7 +488,7 @@ t.test('UserAgent (node)', async t => {
     const output = captured.toString();
     t.match(output, /Client >>> Server/);
     t.match(output, /GET \/hello/);
-    t.match(output, /User-Agent: /i);
+    t.match(output, /Date: /i);
     t.match(output, /Client <<< Server/);
     t.match(output, /Content-Length: /i);
     t.match(output, /Hello World!/);

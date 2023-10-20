@@ -6,3 +6,4 @@ coverage
 /lib
 /test/support/ts-app/lib
 *.tsbuildinfo
+.tap

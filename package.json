@@ -71,7 +71,7 @@
   "dependencies": {
     "@mojojs/dom": "^2.1.0",
     "@mojojs/util": "^1.5.0",
-    "tough-cookie": "^4.1.2",
+    "tough-cookie": "^5.0.0",
     "undici": "^6.19.7"
   }
 }

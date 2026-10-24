@@ -1,5 +1,5 @@
-import type {UserAgentHeaders} from './headers.js';
-import type {BrowserResponse} from './response/browser.js';
+import type {UserAgentHeaders} from './headers.ts';
+import type {BrowserResponse} from './response/browser.ts';
 
 export interface HTTPTransport {
   request: (options: UserAgentRequestOptions) => Promise<BrowserResponse>;
@@ -39,8 +39,13 @@ export interface ResponseOptions {
 }
 
 export interface WebResponse {
+  // The undici and DOM types for ReadableStream are not compatible
   body: ReadableStream<Uint8Array> | null | any;
-  headers: Headers;
+  headers: WebHeaders;
   status: number;
   statusText: string;
+}
+
+export interface WebHeaders {
+  forEach: (fn: (value: string, key: string) => void) => void;
 }

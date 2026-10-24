@@ -30,7 +30,7 @@ t.test('UserAgent (chromium)', async t => {
   t.same(assertLogs, []);
 
   // Increase to 30000 for headful debugging in the browser
-  util.sleep(3);
+  await util.sleep(3);
 
   await context.close();
   await browser.close();

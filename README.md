@@ -22,7 +22,7 @@ const dom = await res.html();
 const title = dom.at('title').text();
 ```
 
-The API is heavily inspired by the [Fetch Standard](https://fetch.spec.whatwg.org) and should feel familar if you've
+The API is heavily inspired by the [Fetch Standard](https://fetch.spec.whatwg.org) and should feel familiar if you've
 used `fetch` before.
 
 ### User-Agent Options
@@ -60,7 +60,7 @@ const res = await ua.request({
   // HTTP method for request
   method: 'GET',
 
-  // URL of request target as a string or URL object, may be be relative to `ua.baseURL`
+  // URL of request target as a string or URL object, may be relative to `ua.baseURL`
   url: new URL('https://mojolicious.org'),
 
   // Headers to include in request
@@ -81,7 +81,7 @@ const res = await ua.request({
   // Object with key/value pairs or `FormData` object to be sent in `multipart/form-data` format
   formData: {fieldA: 'first value', fieldB: 'second value', fieldC: {content: 'third value', filename: 'foo.txt'}},
 
-  // Basic authentication
+  // Basic authentication (also taken from the URL, like `https://user:password@mojolicious.org`)
   auth: 'user:password',
 
   // An `AbortSignal` to abort the request
@@ -144,7 +144,7 @@ const isError = res.isError;
 
 ### Response Body
 
-The reponse body can be received in various formats. Most of them will result once again in a new `Promise`, resolving
+The response body can be received in various formats. Most of them will result once again in a new `Promise`, resolving
 to different results however.
 
 ```js
@@ -180,10 +180,12 @@ extract information from documents with just a CSS selector and almost no code a
 ### Cookies
 
 By default, for Node.js, a [tough-cookie](https://www.npmjs.com/package/tough-cookie) based cookie jar will be used for
-state keeping, and you can reconfigure it however you like.
+state keeping, and you can replace it with one configured however you like.
 
 ```js
-ua.httpTransport.cookieJar.allowSpecialUseDomain = true;
+import {CookieJar} from 'tough-cookie';
+
+ua.httpTransport.cookieJar = new CookieJar(null, {rejectPublicSuffixes: false});
 ```
 
 Of course you can also just disable cookies completely.
@@ -252,7 +254,8 @@ Hello World!
 
 ## Installation
 
-All you need is Node.js 18 (or newer).
+All you need is Node.js 22.19.0 (or newer). Bundlers like esbuild, Vite and webpack will automatically use the browser
+version, with its own TypeScript types, through the `browser` export condition.
 
 ```
 $ npm install @mojojs/user-agent

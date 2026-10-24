@@ -1,4 +1,4 @@
-import UserAgent from '../lib/node.js';
+import UserAgent from '../src/node.ts';
 import mojo, {Server} from '@mojojs/core';
 import t from 'tap';
 

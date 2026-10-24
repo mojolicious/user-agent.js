@@ -1,10 +1,21 @@
 import mojo from '@mojojs/core';
+import {build} from 'esbuild';
 
 export const app = mojo();
 
 if (app.mode === 'development') app.log.level = 'debug';
 
-app.static.publicPaths.push(app.home.child('..', '..', '..', 'dist').toString());
+// Bundle the browser version from source, a Node.js module in the bundle is an error
+app.get('/browser.js', async ctx => {
+  const result = await build({
+    entryPoints: [app.home.child('..', '..', '..', 'src', 'browser.ts').toString()],
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    write: false
+  });
+  await ctx.res.type('text/javascript').send(result.outputFiles[0].text);
+});
 
 app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 
@@ -14,7 +25,7 @@ app.get('/status', ctx => {
   return ctx.render({text: '', status: parseInt(ctx.req.query.get('status'))});
 });
 
-app.get('/headers', ctx => {
+app.any('/headers', ctx => {
   const name = ctx.req.query.get('header');
   const value = ctx.req.get(name) || 'fail';
   ctx.res.set('X-Test', 'works too');
@@ -105,7 +116,8 @@ app
           referer: ctx.req.get('Referer') ?? undefined,
           test: ctx.req.get('X-Test') ?? undefined
         },
-        body: await ctx.req.text()
+        body: await ctx.req.text(),
+        query: ctx.req.query.toString() || undefined
       }
     });
   })

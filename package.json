@@ -17,61 +17,69 @@
   },
   "homepage": "https://mojojs.org",
   "scripts": {
-    "build": "npx tsc --build ./ && npx rollup --config rollup.config.js",
-    "build:clean": "npm run clean && npm run build",
-    "build:coverage": "npm run build && npm run coverage",
-    "build:lint": "npm run build && npm run lint",
-    "build:test": "npm run build && npm test",
-    "build:watch": "npm run build -- --watch",
-    "clean": "rm -rf tsconfig.tsbuildinfo lib dist",
-    "coverage": "c8 tap --disable-coverage --allow-empty-coverage test/*.js",
-    "coverage:ci": "c8 --reporter lcovonly tap --disable-coverage --allow-empty-coverage test/*.js",
-    "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "build": "npx tsc -p tsconfig.json",
+    "check": "npx tsc --noEmit -p tsconfig.json",
+    "clean": "rm -rf lib",
+    "coverage": "tap build && c8 tap --disable-coverage --allow-empty-coverage test/*.js",
+    "coverage:ci": "tap build && c8 --reporter lcovonly tap --disable-coverage --allow-empty-coverage test/*.js",
+    "lint": "eslint",
     "lint:fix": "npm run lint -- --fix",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run clean && npm run build",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
-    "test": "tap --disable-coverage --allow-empty-coverage test/*.js"
+    "test": "tap build && tap --disable-coverage --allow-empty-coverage test/*.js",
+    "check:package": "sh test/support/package/check.sh"
   },
   "exports": {
     ".": {
-      "browser": "./lib/browser.js",
-      "default": "./lib/node.js"
+      "browser": {
+        "types": "./lib/browser.d.ts",
+        "default": "./lib/browser.js"
+      },
+      "default": {
+        "types": "./lib/node.d.ts",
+        "default": "./lib/node.js"
+      }
     }
   },
   "types": "./lib/node.d.ts",
   "type": "module",
+  "sideEffects": false,
   "files": [
     "lib/"
   ],
   "devDependencies": {
-    "@mojojs/core": "^1.6.0",
-    "@mojojs/path": "^1.5.3",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@types/node": "^22.4.0",
-    "@types/tap": "^15.0.3",
-    "@types/tough-cookie": "^4.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "c8": "^10.1.2",
-    "eslint": "^8.1.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "playwright": "^1.26.1",
-    "prettier": "^3.0.0",
-    "rollup": "^4.1.0",
-    "tap": "^21.0.1",
-    "typescript": "^5.0.2"
+    "@eslint/js": "^10.0.1",
+    "@mojojs/core": "^2.0.0",
+    "@mojojs/path": "^2.0.0",
+    "@types/node": "^26.0.1",
+    "c8": "^12.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-node": "^0.4.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.6.0",
+    "playwright": "^1.64.1",
+    "prettier": "^3.8.3",
+    "tap": "^21.8.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 22.19"
   },
   "dependencies": {
-    "@mojojs/dom": "^2.1.0",
-    "@mojojs/util": "^1.5.0",
-    "tough-cookie": "^4.1.2",
-    "undici": "^6.19.7"
+    "@mojojs/dom": "^4.0.0",
+    "@mojojs/util": "^2.0.0",
+    "tough-cookie": "^6.0.2",
+    "undici": "^8.12.3"
+  },
+  "tap": {
+    "plugin": [
+      "!@tapjs/typescript"
+    ]
   }
 }

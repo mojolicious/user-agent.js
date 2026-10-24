@@ -1,3 +1,4 @@
+import type {WebHeaders} from './types.ts';
 import {headerParams} from '@mojojs/util';
 
 type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
@@ -57,7 +58,10 @@ export class UserAgentHeaders {
     return this;
   }
 
-  static fromWeb(headers: Headers): UserAgentHeaders {
+  /**
+   * Create headers from Fetch API headers.
+   */
+  static fromWeb(headers: WebHeaders): UserAgentHeaders {
     const init: string[] = [];
     headers.forEach((value, key) => init.push(key, value));
     return new UserAgentHeaders(init);

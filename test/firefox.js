@@ -1,5 +1,7 @@
+import os from 'node:os';
 import {app} from './support/test-app/index.js';
 import {Server, util} from '@mojojs/core';
+import Path from '@mojojs/path';
 import {firefox} from 'playwright';
 import t from 'tap';
 
@@ -7,7 +9,14 @@ t.test('UserAgent (firefox)', async t => {
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
 
-  const browser = await firefox.launch(process.env.TEST_HEADLESS === '0' ? {headless: false, slowMo: 500} : {});
+  // Firefox 157 fails to start on macOS 27 when it can't access "~/Library/Application Support/Firefox"
+  // (microsoft/playwright#42768), so it gets its own home, which is reused because macOS protects it from deletion
+  const options = process.env.TEST_HEADLESS === '0' ? {headless: false, slowMo: 500} : {};
+  if (process.platform === 'darwin') {
+    const home = await new Path(os.tmpdir(), 'mojo-user-agent-firefox').mkdir({recursive: true});
+    options.env = {...process.env, CFFIXED_USER_HOME: home.toString()};
+  }
+  const browser = await firefox.launch(options);
   const context = await browser.newContext();
   const page = await context.newPage();
   const url = server.urls[0];
@@ -30,7 +39,7 @@ t.test('UserAgent (firefox)', async t => {
   t.same(assertLogs, []);
 
   // Increase to 30000 for headful debugging in the browser
-  util.sleep(3);
+  await util.sleep(3);
 
   await context.close();
   await browser.close();

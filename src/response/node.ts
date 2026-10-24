@@ -1,6 +1,6 @@
-import type {Writable} from 'node:stream';
-import {Readable} from 'node:stream';
-import {BrowserResponse} from './browser.js';
+import {Readable, type Writable} from 'node:stream';
+import {pipeline} from 'node:stream/promises';
+import {BrowserResponse} from './browser.ts';
 
 export class NodeResponse extends BrowserResponse {
   /**
@@ -17,8 +17,6 @@ export class NodeResponse extends BrowserResponse {
   async pipe(writer: Writable): Promise<void> {
     const stream = this.createReadStream();
     if (stream === null) return;
-    return await new Promise((resolve, reject) => {
-      stream.on('error', reject).pipe(writer).on('unpipe', resolve);
-    });
+    await pipeline(stream, writer);
   }
 }

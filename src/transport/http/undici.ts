@@ -1,25 +1,27 @@
-import type {HTTPTransportOptions, UserAgentRequestOptions} from '../../types.js';
+import type {HTTPTransportOptions, UserAgentRequestOptions} from '../../types.ts';
+import type {IncomingHttpHeaders} from 'node:http';
+import type {Duplex} from 'node:stream';
 import {format} from 'node:url';
-import {UserAgentHeaders} from '../../headers.js';
-import {BrowserResponse} from '../../response/browser.js';
-import {expandFormData} from '../../utils.js';
+import {UserAgentHeaders} from '../../headers.ts';
+import {BrowserResponse} from '../../response/browser.ts';
+import {expandFormData} from '../../utils.ts';
 import {termEscape} from '@mojojs/util';
-import tough from 'tough-cookie';
-import {Agent, FormData, fetch} from 'undici';
+import {Cookie, CookieJar} from 'tough-cookie';
+import {Agent, type Dispatcher, FormData, fetch} from 'undici';
 
 export class UndiciTransport {
-  agent: Agent;
-  cookieJar: tough.CookieJar | null = new tough.CookieJar();
+  agent: Dispatcher;
+  cookieJar: CookieJar | null = new CookieJar();
 
   constructor(options: HTTPTransportOptions) {
     const keepAliveTimeout = options.keepAlive ?? 1000;
-    this.agent = new Agent({
+    const agent = new Agent({
       connect: options.insecure === true ? {rejectUnauthorized: false} : {},
-      interceptors: {Client: process.env.MOJO_CLIENT_DEBUG === '1' ? [debugInterceptor] : []} as any,
       keepAliveTimeout: keepAliveTimeout,
       keepAliveMaxTimeout: keepAliveTimeout,
       pipelining: options.keepAlive === null ? 0 : 1
     });
+    this.agent = process.env.MOJO_CLIENT_DEBUG === '1' ? agent.compose(debugInterceptor) : agent;
   }
 
   async request(options: UserAgentRequestOptions): Promise<BrowserResponse> {
@@ -61,56 +63,62 @@ export class UndiciTransport {
     if (cookieJar === null) return;
 
     const cookieURL = this._cookieURL(url);
-    for (const cookie of headers.map(value => tough.Cookie.parse(value))) {
+    for (const cookie of headers.map(value => Cookie.parse(value))) {
       if (cookie !== undefined) await cookieJar.setCookie(cookie, cookieURL);
     }
   }
 }
 
-// Very sketchy API with broken types, will probably need to be changed with undici updates
-class DebugInterceptor {
-  handler: any;
+class DebugHandler implements Dispatcher.DispatchHandler {
+  handler: Dispatcher.DispatchHandler;
 
-  constructor(handler: any) {
+  constructor(handler: Dispatcher.DispatchHandler) {
     this.handler = handler;
   }
 
-  onConnect(...args: any[]) {
-    return this.handler.onConnect(...args);
+  onRequestStart(controller: Dispatcher.DispatchController, context: any): void {
+    this.handler.onRequestStart?.(controller, context);
   }
 
-  onError(...args: any[]) {
-    return this.handler.onError(...args);
+  onRequestUpgrade(
+    controller: Dispatcher.DispatchController,
+    statusCode: number,
+    headers: IncomingHttpHeaders,
+    socket: Duplex
+  ): void {
+    this.handler.onRequestUpgrade?.(controller, statusCode, headers, socket);
   }
 
-  onUpgrade(...args: any[]) {
-    return this.handler.onUpgrade(...args);
+  onResponseStart(
+    controller: Dispatcher.DispatchController,
+    statusCode: number,
+    headers: IncomingHttpHeaders,
+    statusMessage?: string
+  ): void {
+    // Raw headers preserve the original case
+    const raw = new UserAgentHeaders(((controller.rawHeaders ?? []) as Buffer[]).map(buffer => buffer.toString()));
+    process.stderr.write(`-- Client <<< Server\n${statusCode} ${statusMessage}\n${raw.toString()}`);
+    this.handler.onResponseStart?.(controller, statusCode, headers, statusMessage);
   }
 
-  onHeaders(...args: any[]) {
-    const headers = new UserAgentHeaders(args[1].map((buffer: Buffer) => buffer.toString()));
-    process.stderr.write(`-- Client <<< Server\n${args[0]} ${args[3]}\n${headers.toString()}`);
-    return this.handler.onHeaders(...args);
+  onResponseData(controller: Dispatcher.DispatchController, chunk: Buffer): void {
+    process.stderr.write(termEscape(`-- Client <<< Server\n${chunk}\n`));
+    this.handler.onResponseData?.(controller, chunk);
   }
 
-  onData(...args: any[]) {
-    process.stderr.write(termEscape(`-- Client <<< Server\n${args[0]}\n`));
-    return this.handler.onData(...args);
+  onResponseEnd(controller: Dispatcher.DispatchController, trailers: IncomingHttpHeaders): void {
+    this.handler.onResponseEnd?.(controller, trailers);
   }
 
-  onComplete(...args: any[]) {
-    return this.handler.onComplete(...args);
-  }
-
-  onBodySent(...args: any[]) {
-    if (this.handler.onBodySent !== undefined) return this.handler.onComplete(...args);
+  onResponseError(controller: Dispatcher.DispatchController, error: Error): void {
+    this.handler.onResponseError?.(controller, error);
   }
 }
 
-function debugInterceptor(dispatch: any) {
-  return function interceptedDispatch(opts: any, handler: any) {
-    const headers = new UserAgentHeaders(opts.headers);
+function debugInterceptor(dispatch: Dispatcher['dispatch']): Dispatcher['dispatch'] {
+  return function interceptedDispatch(opts, handler) {
+    const headers = new UserAgentHeaders(Object.entries(opts.headers as Record<string, string>).flat());
     process.stderr.write(`-- Client >>> Server\n${opts.method} ${opts.path}\n${headers.toString()}`);
-    return dispatch(opts, new DebugInterceptor(handler));
+    return dispatch(opts, new DebugHandler(handler));
   };
 }

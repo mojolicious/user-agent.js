@@ -1,4 +1,4 @@
-import {UserAgentHeaders} from '../lib/headers.js';
+import {UserAgentHeaders} from '../src/headers.ts';
 import t from 'tap';
 
 t.test('Headers', t => {

@@ -1,6 +1,6 @@
-import type {UserAgentRequestOptions} from '../../types.js';
-import {BrowserResponse} from '../../response/browser.js';
-import {expandFormData} from '../../utils.js';
+import type {UserAgentRequestOptions} from '../../types.ts';
+import {BrowserResponse} from '../../response/browser.ts';
+import {expandFormData} from '../../utils.ts';
 
 export class FetchTransport {
   async request(options: UserAgentRequestOptions): Promise<BrowserResponse> {

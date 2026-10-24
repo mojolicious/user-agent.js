@@ -1,12 +1,27 @@
-import type {ResponseOptions, WebResponse} from '../types.js';
+import type {ResponseOptions, WebResponse} from '../types.ts';
 import type {JSONValue} from '@mojojs/util';
-import {UserAgentHeaders} from '../headers.js';
+import {UserAgentHeaders} from '../headers.ts';
 import DOM from '@mojojs/dom';
 
+/**
+ * User-agent response class.
+ */
 export class BrowserResponse {
+  /**
+   * Response body as a readable stream.
+   */
   body: ReadableStream<Uint8Array> | null;
+  /**
+   * Response headers.
+   */
   headers: UserAgentHeaders;
+  /**
+   * Response status code.
+   */
   statusCode: number;
+  /**
+   * Response status message.
+   */
   statusMessage: string;
 
   constructor(options: ResponseOptions) {
@@ -16,35 +31,33 @@ export class BrowserResponse {
     this.statusMessage = options.statusMessage;
   }
 
+  /**
+   * Get response body as a `Uint8Array`.
+   */
   async data(): Promise<Uint8Array> {
     const body = this.body;
     if (body === null) return new Uint8Array();
-
-    let result = new Uint8Array(0);
-    const reader = body.getReader();
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const {done, value} = await reader.read();
-      if (done === true) break;
-
-      const newResult = new Uint8Array(result.length + value.length);
-      newResult.set(result);
-      newResult.set(value, result.length);
-      result = newResult;
-    }
-
-    return result;
+    return new Uint8Array(await new Response(body).arrayBuffer());
   }
 
-  static fromWeb(res: WebResponse) {
+  /**
+   * Create response from a Fetch API response.
+   */
+  static fromWeb(res: WebResponse): BrowserResponse {
     const headers = UserAgentHeaders.fromWeb(res.headers);
     return new this({body: res.body, headers, statusCode: res.status, statusMessage: res.statusText});
   }
 
+  /**
+   * Get response header value.
+   */
   get(name: string): string | null {
     return this.headers.get(name);
   }
 
+  /**
+   * Parse response body as HTML with `@mojojs/dom`.
+   */
   async html(): Promise<DOM> {
     return new DOM(await this.text());
   }
@@ -88,14 +101,23 @@ export class BrowserResponse {
     return statusCode >= 200 && statusCode <= 299;
   }
 
+  /**
+   * Parse response body as JSON.
+   */
   async json<T = JSONValue>(): Promise<T> {
-    return JSON.parse((await this.text()).toString());
+    return JSON.parse(await this.text());
   }
 
+  /**
+   * Get response body as a string.
+   */
   async text(charset = 'utf-8'): Promise<string> {
     return new TextDecoder(charset).decode(await this.data());
   }
 
+  /**
+   * Parse response body as XML with `@mojojs/dom`.
+   */
   async xml(): Promise<DOM> {
     return new DOM(await this.text(), {xml: true});
   }

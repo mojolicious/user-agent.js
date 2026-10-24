@@ -1,5 +1,6 @@
+import {Writable} from 'node:stream';
+import UserAgent from '../src/node.ts';
 import {app} from './support/test-app/index.js';
-import UserAgent from '../lib/node.js';
 import {Server} from '@mojojs/core';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
@@ -132,6 +133,19 @@ t.test('UserAgent (node)', async t => {
     const res = await ua.get('/hello.json');
     t.equal(res.statusCode, 200);
     t.same(await res.json(), {hello: 'world'});
+
+    const res2 = await ua.post('/headers', {query: {header: 'Content-Type'}, json: {hello: 'world'}});
+    t.equal(res2.statusCode, 200);
+    t.equal(await res2.text(), 'application/json');
+
+    const options = {query: {header: 'Content-Type'}, headers: {'content-type': 'application/vnd.mojo+json'}};
+    const res3 = await ua.post('/headers', {...options, json: {hello: 'world'}});
+    t.equal(res3.statusCode, 200);
+    t.equal(await res3.text(), 'application/vnd.mojo+json');
+
+    const res4 = await ua.post('/headers', {...options, form: {hello: 'world'}});
+    t.equal(res4.statusCode, 200);
+    t.equal(await res4.text(), 'application/vnd.mojo+json');
   });
 
   await t.test('Form', async t => {
@@ -263,6 +277,22 @@ t.test('UserAgent (node)', async t => {
     const res3 = await ua.post('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
     t.equal(res3.statusCode, 200);
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
+
+    const res4 = await ua.get('/auth/basic', {auth: 'sebastian:p€ss:100%'});
+    t.equal(res4.statusCode, 200);
+    t.equal(await res4.text(), 'basic: sebastian:p€ss:100%, body: nothing');
+
+    const url = new URL('/auth/basic', ua.baseURL);
+    url.username = 'foo';
+    url.password = 'b@r';
+    const res5 = await ua.get(url);
+    t.equal(res5.statusCode, 200);
+    t.equal(await res5.text(), 'basic: foo:b@r, body: nothing');
+    t.equal(url.username, 'foo');
+
+    const res6 = await ua.get(url, {auth: 'bar:baz'});
+    t.equal(res6.statusCode, 200);
+    t.equal(await res6.text(), 'basic: bar:baz, body: nothing');
   });
 
   await t.test('Redirect', async t => {
@@ -370,6 +400,46 @@ t.test('UserAgent (node)', async t => {
     const res7 = await ua.post('/redirect/introspect/302', defaultOptions());
     t.equal(res7.statusCode, 200);
     t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
+
+    const lowerCase = {headers: {authorization: 'one', cookie: 'two', referer: 'three', 'x-test': 'five'}};
+    const res8 = await ua.get('/redirect/introspect/301', lowerCase);
+    t.equal(res8.statusCode, 200);
+    t.same(await res8.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
+
+    const res9 = await ua.get('/redirect/introspect/307', lowerCase);
+    t.equal(res9.statusCode, 200);
+    t.same(await res9.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
+
+    const res10 = await ua.get('/redirect/introspect/307', {auth: 'foo:bar', query: {foo: 'bar'}});
+    t.equal(res10.statusCode, 200);
+    t.same(await res10.json(), {method: 'GET', headers: {}, body: ''});
+
+    const res11 = await ua.get('/redirect/introspect', {auth: 'foo:bar', query: {foo: 'bar'}});
+    t.equal(res11.statusCode, 200);
+    t.same(await res11.json(), {
+      method: 'GET',
+      headers: {authorization: 'Basic Zm9vOmJhcg=='},
+      body: '',
+      query: 'foo=bar'
+    });
+  });
+
+  await t.test('Options are not modified', async t => {
+    const options = {headers: {'X-Test': 'works'}, auth: 'foo:bar', json: {hello: 'world'}};
+    const res = await ua.put('/redirect/introspect', options);
+    t.equal(res.statusCode, 200);
+    t.same(await res.json(), {
+      method: 'PUT',
+      headers: {authorization: 'Basic Zm9vOmJhcg==', test: 'works'},
+      body: '{"hello":"world"}'
+    });
+    t.same(options, {headers: {'X-Test': 'works'}, auth: 'foo:bar', json: {hello: 'world'}});
+
+    const url = new URL('/redirect/introspect', ua.baseURL);
+    const res2 = await ua.get(url, {query: {foo: 'bar'}});
+    t.equal(res2.statusCode, 200);
+    t.equal((await res2.json()).query, 'foo=bar');
+    t.equal(url.search, '');
   });
 
   await t.test('HTML/XML', async t => {
@@ -438,6 +508,14 @@ t.test('UserAgent (node)', async t => {
     await res.pipe(stream);
     t.equal(stream.bytesWritten, 11);
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
+
+    const res2 = await ua.put('/body', {body: 'Hello Mojo!'});
+    const writer = new Writable({
+      write(chunk, encoding, cb) {
+        cb(new Error('Disk full'));
+      }
+    });
+    await t.rejects(res2.pipe(writer), /Disk full/);
   });
 
   await t.test('Hooks', async t => {
@@ -470,6 +548,13 @@ t.test('UserAgent (node)', async t => {
     }
 
     t.match(result, /aborted/);
+
+    ua.maxRedirects = 1;
+    const location = new URL('/abort', ua.baseURL).toString();
+    await t.rejects(ua.post('/redirect/302', {query: {location}, signal: AbortSignal.timeout(100)}), {
+      name: 'TimeoutError'
+    });
+    ua.maxRedirects = 0;
   });
 
   await t.test('MOJO_CLIENT_DEBUG', async t => {

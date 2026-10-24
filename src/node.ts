@@ -1,13 +1,19 @@
-import type {UserAgentOptions, UserAgentRequestOptions} from './types.js';
-import BrowserUserAgent from './browser.js';
-import {NodeResponse} from './response/node.js';
-import {UndiciTransport} from './transport/http/undici.js';
+import type {UserAgentOptions, UserAgentRequestOptions} from './types.ts';
+import BrowserUserAgent from './browser.ts';
+import {NodeResponse} from './response/node.ts';
+import {UndiciTransport} from './transport/http/undici.ts';
 
-export {UserAgentHeaders} from './headers.js';
-export {BrowserResponse} from './response/browser.js';
-export {NodeResponse} from './response/node.js';
+export {UserAgentHeaders} from './headers.ts';
+export {BrowserResponse} from './response/browser.ts';
+export {NodeResponse} from './response/node.ts';
+export type {HTTPTransport, UserAgentOptions, UserAgentRequestOptions} from './types.ts';
 
-class NodeUserAgent extends BrowserUserAgent {
+class NodeUserAgent extends BrowserUserAgent<NodeResponse> {
+  /**
+   * Transport backend to perform HTTP requests with.
+   */
+  declare httpTransport: UndiciTransport;
+
   constructor(options: UserAgentOptions = {}) {
     super(options);
 
